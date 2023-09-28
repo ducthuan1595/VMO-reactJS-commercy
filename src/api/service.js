@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://localhost:5050/api";
+export const URL = "http://localhost:5050/api";
 console.log({ URL });
 
 export const requests = {
@@ -38,5 +38,17 @@ export const requests = {
         },
       }
     );
+  },
+
+  // Voucher
+  getVoucher: (page, limit, token) => {
+    return axios.get(`${URL}/get-voucher?page=${page}&limit=${limit}`, {
+      validateStatus: function (status) {
+        return status < 500;
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   },
 };

@@ -1,47 +1,69 @@
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/userSlice";
+
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const currUser = useSelector((state) => state.auth.userCurr);
+  const isLogin = useSelector((state) => state.auth.isLogin);
 
-  console.log({ currUser });
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   return (
     <div className="w-full h-[120px] bg-gradient-to-b from-primary-color to-[#fe6232] text-[white]">
       <div className="w-[1200px] m-auto flex justify-between items-center">
         <div className="my-1 flex gap-4">
-          <span className="cursor-pointer">Tải ứng dụng</span>
-          <div>
-            <img src="" alt="QR" />
+          <span className="cursor-pointer download-app relative hover:opacity-80">
+            Tải ứng dụng
+          </span>
+          <div className="hidden code-QR absolute bg-[white] p-2 top-[32px] shadow-md rounded-sm">
+            <img src="/logo/QR.jpg" alt="QR" className="h-[160px]" />
+            <span className="text-[#333] text-[18px] text-center font-semibold">
+              Tim Gi The
+            </span>
           </div>
-          <span className="cursor-pointer">
+          <span className="cursor-pointer hover:opacity-80">
             Kết nối <i className="fa-brands fa-facebook"></i>{" "}
             <i className="fa-brands fa-instagram"></i>
           </span>
         </div>
-        <div className="my-1 flex gap-4">
-          <span className="cursor-pointer">
+        <div className="my-1 flex gap-5">
+          <span className="cursor-pointer hover:opacity-80">
             <i className="fa-solid fa-bell"></i> Thông báo
           </span>
-          <span className="cursor-pointer">
+          <span className="cursor-pointer hover:opacity-80">
             <i className="fa-solid fa-circle-info"></i> Hỗ trợ
           </span>
-          {currUser.length ? (
-            <span>User</span>
+          {isLogin ? (
+            <span className="hover:opacity-80 cursor-pointer">
+              <i className="fa-solid fa-user"></i> {currUser.name}
+            </span>
           ) : (
             <span
-              className="cursor-pointer"
+              className="cursor-pointer hover:opacity-80"
               onClick={() => navigate("/register")}
             >
               Đăng ký
             </span>
           )}
 
-          {currUser.length ? (
-            <span>Logout</span>
+          {isLogin ? (
+            <span
+              className="hover:opacity-80 cursor-pointer"
+              onClick={handleLogout}
+            >
+              <i className="fa-solid fa-right-from-bracket"></i> Logout
+            </span>
           ) : (
-            <span className="cursor-pointer" onClick={() => navigate("/login")}>
+            <span
+              className="cursor-pointer hover:opacity-80"
+              onClick={() => navigate("/login")}
+            >
               Đăng nhập
             </span>
           )}

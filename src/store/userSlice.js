@@ -12,10 +12,14 @@ const userSlice = createSlice({
       state.userCurr = action.payload;
       state.isLogin = true;
     },
+    logout: (state) => {
+      localStorage.removeItem("book-user");
+      state.isLogin = false;
+    },
   },
 });
 
 // const {reducer, actions} = userSlice;
 
-export const { login } = userSlice.actions;
+export const { login, logout } = userSlice.actions;
 export default userSlice.reducer;

@@ -29,6 +29,9 @@ const Form = () => {
         });
         if (res.data.message === "ok") {
           navigate("/login");
+          setEmail("");
+          setPassword("");
+          setName("");
         } else {
           setErrMessage(res.data.message);
         }
@@ -120,7 +123,7 @@ const Form = () => {
               </div>
               <div>
                 <button
-                  className="w-full bg-primary-color text-[white] py-2 mt-6 mb-3 rounded-lg"
+                  className="w-full bg-primary-color text-[white] py-2 mt-6 mb-3 rounded-lg hover:opacity-80"
                   onClick={handleLogin}
                 >
                   {location.pathname === "/register" ? "Register" : "Login"}
