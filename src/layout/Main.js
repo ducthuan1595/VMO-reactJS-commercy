@@ -1,12 +1,14 @@
 import Header from "../components/header/Header";
+import Footer from "../components/footer/Footer";
 
 const MainLayout = ({ children }) => {
   return (
-    <div>
+    <div className="bg-[#f0f0f0]">
       <Header />
-      <div className="w-[1200px] m-auto flex justify-between items-center my-8">
+      <div className="w-[1200px] m-auto flex flex-col items-center my-8">
         {children}
       </div>
+      <Footer />
     </div>
   );
 };

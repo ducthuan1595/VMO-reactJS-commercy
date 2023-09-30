@@ -14,6 +14,8 @@ const Header = () => {
     dispatch(logout());
   };
 
+  console.log(currUser, isLogin);
+
   return (
     <div className="w-full h-[120px] bg-gradient-to-b from-primary-color to-[#fe6232] text-[white]">
       <div className="w-[1200px] m-auto flex justify-between items-center">
@@ -21,7 +23,7 @@ const Header = () => {
           <span className="cursor-pointer download-app relative hover:opacity-80">
             Tải ứng dụng
           </span>
-          <div className="hidden code-QR absolute bg-[white] p-2 top-[32px] shadow-md rounded-sm">
+          <div className="hidden code-QR absolute bg-[white] p-2 top-[32px] shadow-md rounded-sm z-50">
             <img src="/logo/QR.jpg" alt="QR" className="h-[160px]" />
             <span className="text-[#333] text-[18px] text-center font-semibold">
               Tim Gi The
@@ -39,7 +41,7 @@ const Header = () => {
           <span className="cursor-pointer hover:opacity-80">
             <i className="fa-solid fa-circle-info"></i> Hỗ trợ
           </span>
-          {isLogin ? (
+          {currUser ? (
             <span className="hover:opacity-80 cursor-pointer">
               <i className="fa-solid fa-user"></i> {currUser.name}
             </span>
@@ -52,7 +54,7 @@ const Header = () => {
             </span>
           )}
 
-          {isLogin ? (
+          {currUser ? (
             <span
               className="hover:opacity-80 cursor-pointer"
               onClick={handleLogout}

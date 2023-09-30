@@ -1,46 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
 import { requests } from "../../api/service";
 import { URL } from "../../api/service";
-
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { getVoucher } from "../../store/voucherSlice";
 
 export default function Voucher() {
-  const user = useSelector((state) => state.auth.userCurr);
+  const dispatch = useDispatch();
 
   const [vouchers, setVoucher] = useState(null);
 
   const fetchVoucher = async () => {
-    if (user && user.token) {
-      const res = await requests.getVoucher(null, null, user.token);
-      console.log(res.data);
-      if (res.data.message === "ok") {
-        setVoucher(res.data.data);
-      }
+    const res = await requests.getVoucher(null, null);
+    if (res.data.message === "ok") {
+      dispatch(getVoucher(res.data.data));
+      const activeVoucher = res.data.data.filter(
+        (v) => v.expirationDate > Date.now()
+      );
+      setVoucher(activeVoucher);
     }
   };
   useEffect(() => {
     fetchVoucher();
   }, []);
 
-  console.log({ user });
   return (
     <div className="w-[1200px] h-[300px] flex justify-between gap-2">
       <Swiper
         spaceBetween={30}
-        centeredSlides={true}
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
@@ -50,7 +44,7 @@ export default function Voucher() {
         }}
         navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper flex-1"
+        className="mySwiper flex-1 rounded-xl"
       >
         {vouchers &&
           vouchers.map((v) => {
@@ -59,7 +53,7 @@ export default function Voucher() {
                 <img
                   src={`${URL}/image/${v.pic}`}
                   alt={v.code}
-                  className="rounded-xl"
+                  className="rounded-xl w-full"
                 />
               </SwiperSlide>
             );
