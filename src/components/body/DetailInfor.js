@@ -1,10 +1,21 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+
+import { addCart } from "../../store/userSlice";
+import { requests } from "../../api/service";
 import { URL } from "../../api/service";
 import Modal from "../../layout/Modal";
 
 export default function DetailInfor({ detailItem }) {
+  const currUser = useSelector((state) => state.auth.userCurr);
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
-  const [sliderNumber, setSliderNumber] = useState(0);
+  const [sliderNumber, setSliderNumber] = useState(Number(0));
+  const [quantity, setQuantity] = useState(1);
 
   const handleShowImage = (id) => {
     setOpen(true);
@@ -23,6 +34,46 @@ export default function DetailInfor({ detailItem }) {
     }
   };
 
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      let num = quantity - 1;
+      setQuantity(num);
+    }
+  };
+
+  const sendRequest = async () => {
+    if (currUser && token && detailItem) {
+      try {
+        const value = {
+          quantity,
+          itemId: detailItem?._id,
+        };
+        const res = await requests.addCart(value, token);
+        console.log(res.data);
+        if (res.data.message === "ok") {
+          dispatch(addCart(res.data.data));
+        }
+        return true;
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleAddCart = async () => {
+    await sendRequest();
+  };
+
+  const handlePay = async () => {
+    const res = await sendRequest();
+    if (res) {
+      navigate("/order");
+    }
+  };
+
+  console.log(detailItem, currUser);
   return (
     <div className="flex justify-center gap-[100px] w-full py-6 px-4 rounded-md bg-[white]">
       {open && (
@@ -113,7 +164,7 @@ export default function DetailInfor({ detailItem }) {
           </div>
           <div className="flex items-center font-bold my-[40px] gap-4">
             <span className="text-primary-color text-[28px]">
-              {detailItem?.pricePay
+              {Math.floor(detailItem?.pricePay)
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
               đ
@@ -134,36 +185,48 @@ export default function DetailInfor({ detailItem }) {
           {/* add cart */}
           <div className="">
             <span>Giao hàng tới</span>{" "}
-            <button className="text-[#48a7f8] font-semibold ml-4">
+            <button className="text-[#48a7f8] font-normal ml-4">
               Thay đổi
             </button>
           </div>
           <div>
             <span>Danh mục</span>
-            <span className="text-[#48a7f8] ml-4 font-semibold">
+            <span className="text-[#48a7f8] ml-4 font-normal">
               {detailItem?.categoryId.name}
             </span>
           </div>
           <div className="flex items-center my-4">
             <span>Số lượng:</span>
             <div className="flex items-center bg-[white] rounded-md ml-4">
-              <button className="py-1 px-4 hover:bg-border-color border-[1px] border-solid border-border-color">
+              <button
+                className="py-1 px-4 hover:bg-border-color border-[1px] border-solid border-border-color"
+                onClick={handleDecrease}
+              >
                 -
               </button>
               <span className="py-1 px-4 border-[1px] border-solid border-border-color">
-                1
+                {quantity}
               </span>
-              <button className="py-1 px-4 border-[1px] border-solid border-border-color hover:bg-border-color">
+              <button
+                className="py-1 px-4 border-[1px] border-solid border-border-color hover:bg-border-color"
+                onClick={() => setQuantity((state) => ++state)}
+              >
                 +
               </button>
             </div>
           </div>
           <div className="flex items-center gap-4 font-semibold">
-            <div className="border-[1px] border-solid border-primary-color px-4 py-3 text-primary-color rounded-xl cursor-pointer">
+            <div
+              onClick={handleAddCart}
+              className="border-[1px] border-solid border-primary-color px-4 py-3 text-primary-color rounded-xl cursor-pointer active:opacity-70"
+            >
               <i className="fa-solid fa-cart-plus mr-2"></i>
               <span>Thêm vào giỏ hàng</span>
             </div>
-            <button className="bg-primary-color px-4 py-3 rounded-xl text-[white]">
+            <button
+              className="bg-primary-color px-4 py-3 rounded-xl text-[white]"
+              onClick={handlePay}
+            >
               Mua ngay
             </button>
           </div>

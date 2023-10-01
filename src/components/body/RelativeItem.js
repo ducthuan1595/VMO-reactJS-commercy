@@ -62,7 +62,7 @@ export default function RelativeItem({ detailItem }) {
 
   return (
     <div className="bg-[white] p-4 rounded-md">
-      <div className="text-[24px] font-semibold mb-4">SẢN PHẨM LIÊN QUAN</div>
+      <div className="text-[22px] font-semibold mb-4">SẢN PHẨM LIÊN QUAN</div>
       <div className="grid grid-cols-5 gap-y-4 pb-4 px-2">
         {item &&
           item &&

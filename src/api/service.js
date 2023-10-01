@@ -90,4 +90,38 @@ export const requests = {
       },
     });
   },
+
+  // Cart
+  addCart: (value, token) => {
+    return axios.post(`${URL}/add-cart`, value, {
+      validateStatus: function (status) {
+        return status < 500;
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  deleteCart: (value, token) => {
+    return axios.post(`${URL}/delete-cart`, value, {
+      validateStatus: function (status) {
+        return status < 500;
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+
+  // Order
+  payOrder: (value, token) => {
+    return axios.post(`${URL}/create-order`, value, {
+      validateStatus: function (status) {
+        return status < 500;
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };

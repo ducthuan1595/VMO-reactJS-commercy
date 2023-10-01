@@ -43,7 +43,7 @@ const Form = () => {
         setErrMessage("");
         const res = await requests.login({ email, password });
         if (res.data.message === "ok") {
-          dispatch(login(res.data.data));
+          dispatch(login(res.data));
           navigate("/");
         } else {
           setErrMessage(res.data.message);
@@ -129,15 +129,31 @@ const Form = () => {
                   {location.pathname === "/register" ? "Register" : "Login"}
                 </button>
               </div>
-              {location.pathname === "/login" ? (
-                <div className="text-left mb-2 cursor-pointer">
-                  <p onClick={() => navigate("/forgot-password")}>
-                    Forget your password?
-                  </p>
+              <div className="flex justify-between items-center">
+                {location.pathname === "/login" ? (
+                  <div className="text-left mb-2 cursor-pointer">
+                    <p onClick={() => navigate("/forgot-password")}>
+                      Forget your password?
+                    </p>
+                  </div>
+                ) : (
+                  ""
+                )}
+                <div
+                  className="mb-2 text-[#1386ff] font-normal text-[14px] text-right flex-1 cursor-pointer"
+                  onClick={() =>
+                    navigate(
+                      `${
+                        location.pathname === "/register"
+                          ? "/login"
+                          : "/register"
+                      }`
+                    )
+                  }
+                >
+                  {location.pathname === "/register" ? "Login" : "Signup"}
                 </div>
-              ) : (
-                ""
-              )}
+              </div>
             </div>
             <div className="block text-center">
               <p>Or login with</p>

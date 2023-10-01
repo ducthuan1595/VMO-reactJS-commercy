@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/userSlice";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -10,11 +11,19 @@ const Header = () => {
   const currUser = useSelector((state) => state.auth.userCurr);
   const isLogin = useSelector((state) => state.auth.isLogin);
 
+  const [quantity, setQuantity] = useState(null);
+
   const handleLogout = () => {
     dispatch(logout());
   };
 
-  console.log(currUser, isLogin);
+  useEffect(() => {
+    if (currUser && currUser.cart?.length > 0) {
+      setQuantity(currUser.cart.reduce((a, b) => a + b.quantity, 0));
+    } else {
+      setQuantity(null);
+    }
+  }, [currUser]);
 
   return (
     <div className="w-full h-[120px] bg-gradient-to-b from-primary-color to-[#fe6232] text-[white]">
@@ -41,9 +50,9 @@ const Header = () => {
           <span className="cursor-pointer hover:opacity-80">
             <i className="fa-solid fa-circle-info"></i> Hỗ trợ
           </span>
-          {currUser ? (
+          {isLogin ? (
             <span className="hover:opacity-80 cursor-pointer">
-              <i className="fa-solid fa-user"></i> {currUser.name}
+              <i className="fa-solid fa-user"></i> {currUser.username}
             </span>
           ) : (
             <span
@@ -54,7 +63,7 @@ const Header = () => {
             </span>
           )}
 
-          {currUser ? (
+          {isLogin ? (
             <span
               className="hover:opacity-80 cursor-pointer"
               onClick={handleLogout}
@@ -86,8 +95,16 @@ const Header = () => {
             <i className="fa-solid fa-magnifying-glass"></i>
           </button>
         </div>
-        <div className="text-3xl cursor-pointer">
-          <i className="fa-solid fa-cart-shopping"></i>
+        <div
+          className="text-3xl cursor-pointer relative"
+          onClick={() => navigate("/order")}
+        >
+          <i className="fa-solid fa-cart-shopping mr-[5px]"></i>
+          {quantity && quantity > 0 && (
+            <span className="py-[5px] px-[8px] top-[-12px] left-[25px] leading-none bg-[#fff] text-primary-color font-semibold rounded-full absolute text-[14px]">
+              {quantity}
+            </span>
+          )}
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ export default function InforItem({ detailItem }) {
   const [showText, setShowText] = useState(false);
   return (
     <div className="bg-[white] p-4 rounded-md">
-      <div className="text-[24px] font-semibold mb-4">THÔNG TIN SẢN PHẨM</div>
+      <div className="text-[20px] font-semibold mb-4">THÔNG TIN SẢN PHẨM</div>
       <div className="flex items-center text-[#92959b]">
         <div className="mr-[200px]">
           <div>Mã hàng</div>
