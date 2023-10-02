@@ -115,13 +115,17 @@ export const requests = {
 
   // Order
   payOrder: (value, token) => {
-    return axios.post(`${URL}/create-order`, value, {
-      validateStatus: function (status) {
-        return status < 500;
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return axios.post(
+      `${URL}/create-order`,
+      { ...value },
+      {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   },
 };

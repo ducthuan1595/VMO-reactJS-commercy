@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../store/userSlice";
 import { useEffect, useState } from "react";
 
+import { requests } from "../../api/service";
+
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -12,6 +14,9 @@ const Header = () => {
   const isLogin = useSelector((state) => state.auth.isLogin);
 
   const [quantity, setQuantity] = useState(null);
+  const [search, setSearch] = useState("");
+  const [openSearch, setOpenSearch] = useState(false);
+  const [itemSearch, setItemSearch] = useState(null);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -24,6 +29,52 @@ const Header = () => {
       setQuantity(null);
     }
   }, [currUser]);
+
+  const handleSearch = async () => {
+    if (search) {
+      const key = search.trim();
+      try {
+        const res = await requests.getItem(
+          null,
+          key,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        );
+        if (res.data.message === "ok") {
+          setItemSearch(res.data.data);
+          setOpenSearch(!openSearch);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  const handleShowDetail = (id) => {
+    const item = itemSearch.find((i) => i._id.toString() === id.toString());
+    if (item) {
+      navigate(`/detail-item/${id}`, {
+        state: {
+          detailItem: item,
+        },
+      });
+      setOpenSearch(false);
+      setSearch("");
+    }
+  };
+
+  const handleSearchWithEnter = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  console.log(itemSearch);
 
   return (
     <div className="w-full h-[120px] bg-gradient-to-b from-primary-color to-[#fe6232] text-[white]">
@@ -84,16 +135,43 @@ const Header = () => {
         <div className="cursor-pointer" onClick={() => navigate("/")}>
           <img src="/logo/book_logo.png" className="h-20" alt="logo" />
         </div>
-        <div className="w-[800px] h-12 leading-8 flex justify-between items-center bg-[white] p-2 rounded-md">
+        <div className="w-[800px] relative h-12 leading-8 flex justify-between items-center bg-[white] p-2 rounded-md">
           <input
             name="search"
             type="text"
-            className="flex-1 mr-2 text-[#333] outline-none"
+            className="flex-1 mr-2 text-[#333] outline-none pl-3"
             placeholder="Tìm book & author"
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => handleSearchWithEnter(e)}
+            value={search}
           />
-          <button className="bg-primary-color px-6 py-1 rounded-sm text-center">
+          <button
+            onClick={handleSearch}
+            className="bg-primary-color px-6 py-1 hover:opacity-80 rounded-sm text-center"
+          >
             <i className="fa-solid fa-magnifying-glass"></i>
           </button>
+          {openSearch && (
+            <div className="absolute top-[52px] rounded-md left-0 right-0 h-[320px] overflow-auto bg-white z-30 p-4">
+              {itemSearch.length ? (
+                itemSearch.map((i) => {
+                  return (
+                    <div
+                      key={i._id}
+                      className="text-[#888383] cursor-pointer hover:bg-border-color p-1"
+                      onClick={handleShowDetail.bind(null, i._id)}
+                    >
+                      <span>{i.name}</span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-[#888383] cursor-pointer text-center hover:bg-border-color p-1">
+                  Hiện tại chúng tôi chưa có sản phẩm này.
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <div
           className="text-3xl cursor-pointer relative"

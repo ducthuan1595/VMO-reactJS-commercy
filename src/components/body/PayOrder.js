@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import Promo from "./Promo";
 import { useNavigate } from "react-router-dom";
+import handleToast from "../../util/toast";
 
 export default function PayOrder({ checkCartArrId }) {
   const navigate = useNavigate();
@@ -18,8 +20,12 @@ export default function PayOrder({ checkCartArrId }) {
   }, [checkCartArrId]);
 
   const nagivatePay = () => {
-    navigate("/payment", { state: { cart: checkCartArrId } });
-    window.scrollTo(0, 0);
+    if (checkCartArrId.length) {
+      navigate("/payment", { state: { cart: checkCartArrId } });
+      window.scrollTo(0, 0);
+    } else {
+      handleToast(toast.warning, "Hãy chọn sản phẩm trước khi thanh toán nhé!");
+    }
   };
 
   return (

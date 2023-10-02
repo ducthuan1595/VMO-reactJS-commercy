@@ -12,9 +12,13 @@ const voucherSLice = createSlice({
     },
     getCodeVoucher: (state, action) => {
       if (state.vouchers) {
-        state.codeVoucher = state.vouchers.filter(
-          (v) => v.code === action.payload
-        );
+        if (action.payload) {
+          state.codeVoucher = state.vouchers.filter(
+            (v) => v.code === action.payload
+          );
+        } else {
+          state.codeVoucher = null;
+        }
       }
     },
   },

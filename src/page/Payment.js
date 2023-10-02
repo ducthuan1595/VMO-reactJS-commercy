@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
+import { URL } from "../api/service";
+import { requests } from "../api/service";
 import MainLayout from "../layout/Main";
-import { useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import handleToast from "../util/toast";
+import { addCart } from "../store/userSlice";
+import { getCodeVoucher } from "../store/voucherSlice";
 
 export default function Payment() {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cart = useSelector((state) => state.auth.userCurr);
+  const token = useSelector((state) => state.auth.token);
   const codeVoucher = useSelector((state) => state.voucher.codeVoucher);
 
   const [cartItem, setCartItem] = useState(null);
   const [totalPay, setTotalPay] = useState(0);
+  const [totalItem, setTotalItem] = useState(0);
+  const [discountVoucher, setDiscountVoucher] = useState(0);
 
   useEffect(() => {
     const handleArr = (arr, cart) => {
@@ -29,25 +40,39 @@ export default function Payment() {
         total += c.quantity * c.itemId.pricePay;
       });
     }
-    if (codeVoucher[0]) {
-      const discount = (Math.floor(totalPay) * +codeVoucher[0].discount) / 100;
-      total = Math.floor(totalPay) - discount;
-    }
-    setTotalPay(Math.floor(total));
-  }, [cartItem, codeVoucher]);
-
-  useEffect(() => {
-    if (codeVoucher[0]) {
-      const discount = (Math.floor(totalPay) * +codeVoucher[0].discount) / 100;
-      const total = Math.floor(totalPay) - discount;
-      console.log(Math.floor(discount), total);
+    setTotalItem(Math.floor(total));
+    if (codeVoucher && +codeVoucher[0].expirationDate > Date.now()) {
+      setDiscountVoucher(Math.floor((total * codeVoucher[0].discount) / 100));
+      setTotalPay(Math.floor(total - (total * codeVoucher[0].discount) / 100));
+    } else {
       setTotalPay(Math.floor(total));
     }
-  }, [codeVoucher]);
+  }, [cartItem, codeVoucher]);
 
-  const handleCheckout = () => {};
+  const handleCheckout = async () => {
+    if (token) {
+      const value = cartItem.map((i) => i._id);
+      const values = {
+        arrCartId: value,
+        voucherCode: codeVoucher && codeVoucher[0].code,
+      };
+      const res = await requests.payOrder(values, token);
+      if (res.data.message === "ok") {
+        dispatch(addCart(res.data.data.updateUser));
+        dispatch(getCodeVoucher(null));
+        navigate("/");
+        window.scrollTo(0, 0);
+        handleToast(
+          toast.success,
+          "Bạn đã đặt hàng thành công! Kiểm tra email để xem chi tiết."
+        );
+      } else {
+        handleToast(toast.error, "Ôi! Có lỗi sảy ra vui lòng thanh toán lại.");
+      }
+    }
+  };
 
-  console.log(codeVoucher);
+  // console.log(codeVoucher);
   return (
     <MainLayout>
       <div className="text-[22px] font-semibold w-full bg-white p-5 rounded.md text-primary-color">
@@ -68,8 +93,8 @@ export default function Payment() {
             {cartItem &&
               cartItem.map((i) => {
                 return (
-                  <tr key={i._id} className="">
-                    <td className="flex w-[240px]">
+                  <tr key={i._id} className="text-center">
+                    <td className="flex w-[240px] text-start">
                       <img
                         src={`${URL}/image/${i.itemId.pic[0]}`}
                         alt={i.itemId.name}
@@ -106,14 +131,18 @@ export default function Payment() {
           </div>
           <div className="flex flex-col items-end justify-end gap-2">
             <span className=" ml-2">
-              {totalPay &&
-                Math.floor(totalPay)
+              {totalItem &&
+                Math.floor(totalItem)
                   .toString()
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
               đ
             </span>
             <span>0đ</span>
-            <span>-1000đ</span>
+            <span>
+              -
+              {discountVoucher.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              đ
+            </span>
             <div className="flex">
               <span className="text-primary-color text-[24px] font-semibold ml-2">
                 {totalPay &&

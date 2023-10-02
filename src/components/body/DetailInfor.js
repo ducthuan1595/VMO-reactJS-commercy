@@ -52,8 +52,10 @@ export default function DetailInfor({ detailItem }) {
         console.log(res.data);
         if (res.data.message === "ok") {
           dispatch(addCart(res.data.data));
+          return true;
+        } else {
+          return false;
         }
-        return true;
       } catch (err) {
         console.log(err);
       }
@@ -73,7 +75,6 @@ export default function DetailInfor({ detailItem }) {
     }
   };
 
-  console.log(detailItem, currUser);
   return (
     <div className="flex justify-center gap-[100px] w-full py-6 px-4 rounded-md bg-[white]">
       {open && (

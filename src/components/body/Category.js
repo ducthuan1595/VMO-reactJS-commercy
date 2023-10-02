@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { URL, requests } from "../../api/service";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getListItemCategory } from "../../store/categorySlice";
 
 export default function Category() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [categories, setCategories] = useState(null);
 
   const fetchCategory = async () => {
@@ -16,7 +21,9 @@ export default function Category() {
     fetchCategory();
   }, []);
 
-  console.log("cateogry", categories);
+  const handleDetailCategory = async (name) => {
+    dispatch(getListItemCategory(name));
+  };
 
   return (
     <div className="bg-[white] rounded-sm">
@@ -31,7 +38,11 @@ export default function Category() {
         {categories &&
           categories.map((c) => {
             return (
-              <div key={c._id} className="cursor-pointer">
+              <div
+                key={c._id}
+                className="cursor-pointer hover:opacity-80"
+                onClick={handleDetailCategory.bind(null, c.name)}
+              >
                 <img
                   src={`${URL}/image/${c.banner[0]}`}
                   alt={c.name}

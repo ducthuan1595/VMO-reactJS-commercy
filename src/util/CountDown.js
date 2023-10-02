@@ -12,7 +12,6 @@ export default function CountDown({ timer }) {
       }, 1000);
     }
   }, [time]);
-  console.log(time);
   // 1,297,808,304
 
   const getFormTime = (m) => {

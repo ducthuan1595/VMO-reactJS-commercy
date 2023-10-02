@@ -75,7 +75,7 @@ export default function Order() {
     }
   };
 
-  console.log({ checkCartArrId });
+  // console.log({ checkCartArrId });
   return (
     <MainLayout>
       <div className="text-[22px] font-semibold w-full bg-white p-5 rounded.md text-primary-color">
@@ -104,7 +104,7 @@ export default function Order() {
               currUser.cart.map((i) => {
                 const totalPrice = Math.floor(i.itemId.pricePay * i.quantity);
                 return (
-                  <tr key={i._id} className="">
+                  <tr key={i._id} className="text-center">
                     <td>
                       <input
                         type="checkbox"
@@ -116,7 +116,7 @@ export default function Order() {
                       <img
                         src={`${URL}/image/${i.itemId.pic[0]}`}
                         alt={i.itemId.name}
-                        className="h-[120px] my-4 ml-4"
+                        className="h-[120px] my-4 ml-8"
                       />
                       <span className="mt-4 ml-2">{i.itemId.name}</span>
                     </td>
@@ -127,7 +127,7 @@ export default function Order() {
                       đ
                     </td>
                     <td>
-                      <div className="flex items-center bg-[white] rounded-md ml-4">
+                      <div className="flex items-center justify-center bg-[white] rounded-md ml-4">
                         <button
                           className="py-1 px-4 hover:bg-border-color border-[1px] border-solid border-border-color"
                           onClick={handleDecrease.bind(
