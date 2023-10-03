@@ -56,8 +56,8 @@ body {
 }
 
 .percent-sale {
-  top                : 20px;
-  right              : 20px;
+  top                : 10px;
+  right              : 0px;
   background-color   : #f84b2f;
   border-radius      : 50%;
   color              : white;
@@ -89,6 +89,11 @@ body {
   box-shadow: 0px 4px 8px 2px #f0f0f0;
 }
 
+.child-hover:focus {
+  transform : translateY(1px);
+  box-shadow: 0px 4px 8px 2px #f0f0f0;
+}
+
 .background_gradient {
   position        : absolute;
   top             : 0;
@@ -115,7 +120,18 @@ th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+*/
 
 .active {
-  color: #f6f6f6;
-} */
+  color: #f84b2f;
+}
+
+.create-before-stage::before {
+  position    : absolute;
+  content     : '';
+  border-style: solid;
+  border-width: 20px 27px;
+  border-color: transparent transparent white transparent;
+  right       : 4px;
+  top         : -29px;
+}

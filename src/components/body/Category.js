@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { URL, requests } from "../../api/service";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { getListItemCategory } from "../../store/categorySlice";
 
 export default function Category() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [categories, setCategories] = useState(null);
 
   const fetchCategory = async () => {
     const res = await requests.getCategory();
-    console.log(res.data);
     if (res.data.message === "ok") {
       setCategories(res.data.data);
     }
@@ -21,9 +17,27 @@ export default function Category() {
     fetchCategory();
   }, []);
 
-  const handleDetailCategory = async (name) => {
-    dispatch(getListItemCategory(name));
-  };
+  // const handleDetailCategory = async (name) => {
+  //   try {
+  //     const filter = name;
+  //     const res = await requests.getItem(
+  //       filter,
+  //       null,
+  //       null,
+  //       null,
+  //       null,
+  //       null,
+  //       null,
+  //       null,
+  //       null
+  //     );
+  //     if (res.data.message === "ok") {
+  //       window.scrollTo(0, 0);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   return (
     <div className="bg-[white] rounded-sm">
@@ -41,7 +55,14 @@ export default function Category() {
               <div
                 key={c._id}
                 className="cursor-pointer hover:opacity-80"
-                onClick={handleDetailCategory.bind(null, c.name)}
+                onClick={() => {
+                  navigate(`/list-item-category?category`, {
+                    state: {
+                      state: c.name,
+                    },
+                  });
+                  window.scrollTo(0, 0);
+                }}
               >
                 <img
                   src={`${URL}/image/${c.banner[0]}`}

@@ -102,9 +102,38 @@ const Header = () => {
             <i className="fa-solid fa-circle-info"></i> Hỗ trợ
           </span>
           {isLogin ? (
-            <span className="hover:opacity-80 cursor-pointer">
-              <i className="fa-solid fa-user"></i> {currUser.username}
-            </span>
+            <div className="group relative">
+              <span className="hover:opacity-80 cursor-pointer">
+                <i className="fa-solid fa-user"></i> {currUser.username}
+              </span>
+              <div className="group-hover:block transition duration-75 ease-in delay-150 absolute hidden z-20 right-0 top-[30px] create-before-stage bg-white p-4 text-[#333] w-[160px] rounded-md hover:delay-300">
+                <ul>
+                  <li
+                    className="cursor-pointer hover:text-primary-color"
+                    onClick={() => {
+                      navigate("/account");
+                    }}
+                  >
+                    Tài khoản
+                  </li>
+                  <li
+                    className="my-2 cursor-pointer hover:text-primary-color"
+                    onClick={() => navigate("/purchase")}
+                  >
+                    Đơn mua
+                  </li>
+                  <li
+                    className="cursor-pointer hover:text-primary-color"
+                    onClick={() => {
+                      dispatch(logout());
+                      navigate("/");
+                    }}
+                  >
+                    Đăng xuất
+                  </li>
+                </ul>
+              </div>
+            </div>
           ) : (
             <span
               className="cursor-pointer hover:opacity-80"
@@ -114,14 +143,7 @@ const Header = () => {
             </span>
           )}
 
-          {isLogin ? (
-            <span
-              className="hover:opacity-80 cursor-pointer"
-              onClick={handleLogout}
-            >
-              <i className="fa-solid fa-right-from-bracket"></i> Logout
-            </span>
-          ) : (
+          {!isLogin && (
             <span
               className="cursor-pointer hover:opacity-80"
               onClick={() => navigate("/login")}

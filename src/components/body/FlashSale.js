@@ -64,7 +64,7 @@ export default function FlashSale() {
           // modules={[FreeMode, Pagination, Scrollbar]}
           // className="mySwiper"
           watchSlidesProgress={true}
-          slidesPerView={5}
+          slidesPerView={6}
           className="mySwiper"
         >
           {itemSale &&

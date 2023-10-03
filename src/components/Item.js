@@ -61,7 +61,7 @@ export default function Item({
         />
         {percent && !isBorder && (
           <div className="absolute percent-sale">
-            <span className="percent">{percent}%</span>
+            <span className="percent text-[16px]">{percent}%</span>
           </div>
         )}
       </div>
@@ -71,7 +71,7 @@ export default function Item({
           {pricePay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ
         </span>
         {isBorder && percent && (
-          <span className="bg-[#C92127] px-[2px] py-[1px] text-[white] rounded-md">
+          <span className="bg-[#C92127] px-[4px] py-[2px] text-[white] text-[17px] rounded-md">
             {percent}%
           </span>
         )}
@@ -79,7 +79,7 @@ export default function Item({
       <div className="font-light line-through text-left">
         {priceOrigin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ
       </div>
-      <div className="text-[#f6a500] text-left">
+      <div className="text-[#f6a500] text-[12px] text-left">
         <i className="fa-solid fa-star"></i>
         <i className="fa-solid fa-star"></i>
         <i className="fa-solid fa-star"></i>

@@ -1,79 +1,203 @@
-import React from "react";
-import { useLocation, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
 import Item from "../components/Item";
 import MainLayout from "../layout/Main";
-import { getListItemCategory } from "../store/categorySlice";
+import { requests } from "../api/service";
 
 export default function ListCategory() {
   const location = useLocation();
-  const { name } = useParams();
-  const dispatch = useDispatch();
-  const listItem = useSelector((state) => state.category.listItem);
+  const [search, setSearch] = useSearchParams();
 
-  const handleListItemCategory = (name) => {
-    dispatch(getListItemCategory(name));
+  const [listItem, setListItem] = useState([]);
+  const [categories, setCategories] = useState(null);
+  const [priceLow, setPriceLow] = useState("");
+  const [priceHeight, setPriceHight] = useState("");
+  const [checkPrice, setCheckPrice] = useState(null);
+
+  const fetchCategory = async () => {
+    const res = await requests.getCategory();
+    if (res.data.message === "ok") {
+      setCategories(res.data.data);
+    }
   };
 
-  console.log(listItem, name);
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  const getItemCategory = async (name, type, column) => {
+    try {
+      const filter = name;
+      const res = await requests.getItem(
+        filter,
+        null,
+        null,
+        null,
+        null,
+        type,
+        column,
+        null,
+        null
+      );
+      console.log(res.data.data);
+      if (res.data.message === "ok") {
+        setListItem(res.data.data);
+        search.set("category", name);
+        setSearch(search, { replace: true });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  useEffect(() => {
+    getItemCategory(
+      location.state?.state ? location.state.state : "Tiểu thuyết",
+      null,
+      null
+    );
+  }, []);
+
+  const handleListItemCategory = (name) => {
+    getItemCategory(name, null, null);
+  };
+
+  let params = new URL(document.location).searchParams;
+  let name = params.get("category");
+
+  const selectChange = (e, column) => {
+    getItemCategory(name, e.target.value, column);
+  };
+
+  const handleFilterPrice = async () => {
+    if (priceHeight && priceLow) {
+      const res = await requests.getItemWithPrice(priceLow, priceHeight);
+      if (res.data.message === "ok") {
+        setListItem(res.data.data);
+      }
+    }
+  };
+
+  const handleCheck = (e, price) => {
+    // List price
+    const listPrice = {
+      from0To1: [0, 100000],
+      from1To25: [100000, 250000],
+      from25To55: [250000, 550000],
+      from55ToHight: [550000, true],
+    };
+    if (e.target.checked) {
+      setCheckPrice(e.target.checked);
+      for (const key in listPrice) {
+        if (key === price) {
+          setPriceLow(listPrice[key][0]);
+          setPriceHight(listPrice[key][1]);
+          handleFilterPrice();
+        }
+      }
+    } else {
+      setPriceLow("");
+      setPriceHight("");
+    }
+  };
+
+  console.log(priceHeight, priceLow);
   return (
     <MainLayout>
       <div className="flex items-start gap-4 justify-between w-full">
         <div className="w-[20%] divide-y flex flex-col gap-4 bg-white p-4 rounded-md">
           <ul className="flex flex-col gap-2">
-            <li className="text-[18px] font-semibold">Danh mục</li>
-            {listItem &&
-              listItem.map((c) => {
+            <li className="text-[16px] font-semibold">Danh mục</li>
+            {categories &&
+              categories.map((c) => {
                 return (
                   <li
                     key={c._id}
-                    className="pl-2"
+                    className="pl-2 cursor-pointer text-[15px] hover:opacity-80 child-hove"
                     style={{ color: name === c.name ? "#f84b2f" : "" }}
-                    onClick={handleListItemCategory.bind(null, c.name)}
+                    onClick={() => handleListItemCategory(c.name)}
                   >
-                    <span>{c.name}</span>
+                    {c.name}
                   </li>
                 );
               })}
           </ul>
-          <div className="">
-            <h3 className="text-[18px] font-semibold">Giá</h3>
+          <div className="text-[14px] flex flex-col gap-2">
+            <h3 className="text-[16px] font-semibold">Giá</h3>
             <div className="flex items-center gap-2 pt-2">
               Từ{" "}
               <input
                 type="number"
                 placeholder="100.000đ"
                 className="py-1 px-2 w-[140px] bg-border-color outline-none"
+                value={priceLow}
+                onChange={(e) => setPriceLow(e.target.value)}
               />
             </div>
-            <div className="flex items-center gap-2 py-2">
+            <div className="flex items-center gap-2">
               tới
               <input
                 type="number"
-                placeholder="500.000đ"
+                placeholder="5.000.000đ"
                 className="py-1 px-2 w-[140px] bg-border-color outline-none"
+                value={priceHeight}
+                onChange={(e) => setPriceHight(e.target.value)}
               />
+              <button
+                className="bg-primary-color py-1 px-2 text-white rounded-md text-[12px]"
+                onClick={handleFilterPrice}
+              >
+                Tìm
+              </button>
             </div>
             <div className="flex gap-2">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                onClick={(e) => handleCheck(e, "from0To1")}
+                name="price"
+                value={"fromTo1"}
+                // checked={checkPrice === "fromTo1"}
+              />
               <label>0đ - 100.000đ</label>
             </div>
             <div className="flex gap-2">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                onClick={(e) => handleCheck(e, "from1To25")}
+                name="price"
+                value={"from1To25"}
+                // checked={checkPrice === "from1To25"}
+              />
               <label>100.000đ - 250.000đ</label>
             </div>
             <div className="flex gap-2">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                onClick={(e) => handleCheck(e, "from25To55")}
+                name="price"
+                value={"from25To55"}
+                checked={checkPrice === "from25To55"}
+              />
               <label>250.000đ - 550.000đ</label>
             </div>
             <div className="flex gap-2">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                onClick={(e) => handleCheck(e, "from55ToHight")}
+                value="from55ToHight"
+                name="price"
+                checked={checkPrice === "from55ToHight"}
+              />
               <label>550.000đ - Trở lên</label>
             </div>
           </div>
-          <div className="">
-            <h3 className="text-[18px] font-semibold">Ngôn ngữ</h3>
+          <div className="text-[14px] flex flex-col gap-2">
+            <h3 className="text-[16px] font-semibold">Ngôn ngữ</h3>
             <div className="flex gap-2">
               <input type="checkbox" />
               <label>Tiếng Việt</label>
@@ -82,31 +206,34 @@ export default function ListCategory() {
               <input type="checkbox" />
               <label>Tiếng Anh</label>
             </div>
-            <div className="flex gap-2">
-              <input type="checkbox" />
-              <label>Tiếng Trung</label>
-            </div>
           </div>
         </div>
         <div className="flex-1 w-[60%] bg-white rounded-md">
-          <div className="flex items-start justify-start p-4 gap-3">
+          <div className="flex items-start justify-start p-4 gap-4">
             <h4 className="font-semibold">Sắp xếp theo: </h4>
             <div>
-              <label>Danh mục</label>
-              <select>
-                <option>tiểu thuyết</option>
+              <select
+                className="text-[14px] bg-white"
+                onChange={(e) => selectChange(e, "name")}
+              >
+                <option value={"asc"}>Danh mục</option>
+                <option value={"desc"}>Tên</option>
               </select>
             </div>
             <div>
-              <label>Theo giá</label>
-              <select>
-                <option>100.000đ</option>
+              <select
+                className="text-[14px] bg-white"
+                onChange={(e) => selectChange(e, "pricePay")}
+              >
+                <option>Giá</option>
+                <option value={"asc"}>Thấp tới cao</option>
+                <option value={"desc"}>Cao tới thấp</option>
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-y-4 pb-4 px-2">
-            {location &&
-              location.state.listItems.map((i) => {
+          <div className="grid grid-cols-5 gap-y-5 pb-4 px-2">
+            {listItem &&
+              listItem.map((i) => {
                 return (
                   <Item
                     pic={i.pic}

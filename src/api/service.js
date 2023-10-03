@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export const URL = "http://localhost:5050/api";
-console.log({ URL });
 
 export const requests = {
   register: (value) => {
@@ -40,6 +39,21 @@ export const requests = {
     );
   },
 
+  updateUser: (value, token) => {
+    return axios.post(
+      `${URL}/update-user`,
+      { ...value },
+      {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+
   // Voucher
   getVoucher: (page, limit, token) => {
     return axios.get(`${URL}/get-voucher?page=${page}&limit=${limit}`, {
@@ -67,11 +81,12 @@ export const requests = {
         validateStatus: function (status) {
           return status < 500;
         },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       }
     );
+  },
+
+  getItemWithPrice: (low, hight) => {
+    return axios.get(`${URL}/get-item-follow-price?low=${low}&hight=${hight}`);
   },
 
   getItemFlashSale: () => {
