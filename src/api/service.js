@@ -143,4 +143,18 @@ export const requests = {
       }
     );
   },
+
+  getOrder: (value, token) => {
+    return axios.get(
+      `${URL}/get-order?page=${value.page}&limit=${value.limit}&type=${value.type}&column=${value.column}`,
+      {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
 };

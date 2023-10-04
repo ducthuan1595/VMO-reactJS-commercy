@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Navigate,
   useLocation,
@@ -55,13 +55,14 @@ export default function ListCategory() {
       console.error(err);
     }
   };
+  // get items
   useEffect(() => {
     getItemCategory(
       location.state?.state ? location.state.state : "Tiểu thuyết",
       null,
       null
     );
-  }, []);
+  }, [search]);
 
   const handleListItemCategory = (name) => {
     getItemCategory(name, null, null);
@@ -80,33 +81,35 @@ export default function ListCategory() {
       if (res.data.message === "ok") {
         setListItem(res.data.data);
       }
-    }
-  };
-
-  const handleCheck = (e, price) => {
-    // List price
-    const listPrice = {
-      from0To1: [0, 100000],
-      from1To25: [100000, 250000],
-      from25To55: [250000, 550000],
-      from55ToHight: [550000, true],
-    };
-    if (e.target.checked) {
-      setCheckPrice(e.target.checked);
-      for (const key in listPrice) {
-        if (key === price) {
-          setPriceLow(listPrice[key][0]);
-          setPriceHight(listPrice[key][1]);
-          handleFilterPrice();
+    } else {
+      const listPrice = {
+        fromTo1: [0, 100000],
+        from1To25: [100000, 250000],
+        from25To55: [250000, 550000],
+        from55ToHight: [550000, 1000000000000],
+      };
+      if (checkPrice) {
+        const hight = listPrice[checkPrice][1];
+        const low = listPrice[checkPrice][0];
+        const res = await requests.getItemWithPrice(low, hight);
+        if (res.data.message === "ok") {
+          setListItem(res.data.data);
         }
       }
-    } else {
+    }
+  };
+  useEffect(() => {
+    handleFilterPrice();
+  }, [checkPrice, priceHeight, priceLow]);
+
+  const handleCheck = async (e) => {
+    if (e.target.checked) {
       setPriceLow("");
       setPriceHight("");
+      setCheckPrice(e.target.value);
     }
   };
 
-  console.log(priceHeight, priceLow);
   return (
     <MainLayout>
       <div className="flex items-start gap-4 justify-between w-full">
@@ -148,62 +151,64 @@ export default function ListCategory() {
                 value={priceHeight}
                 onChange={(e) => setPriceHight(e.target.value)}
               />
-              <button
+              {/* <button
                 className="bg-primary-color py-1 px-2 text-white rounded-md text-[12px]"
                 onClick={handleFilterPrice}
               >
                 Tìm
-              </button>
+              </button> */}
             </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                onClick={(e) => handleCheck(e, "from0To1")}
-                name="price"
-                value={"fromTo1"}
-                // checked={checkPrice === "fromTo1"}
-              />
-              <label>0đ - 100.000đ</label>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                onClick={(e) => handleCheck(e, "from1To25")}
-                name="price"
-                value={"from1To25"}
-                // checked={checkPrice === "from1To25"}
-              />
-              <label>100.000đ - 250.000đ</label>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                onClick={(e) => handleCheck(e, "from25To55")}
-                name="price"
-                value={"from25To55"}
-                checked={checkPrice === "from25To55"}
-              />
-              <label>250.000đ - 550.000đ</label>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                onClick={(e) => handleCheck(e, "from55ToHight")}
-                value="from55ToHight"
-                name="price"
-                checked={checkPrice === "from55ToHight"}
-              />
-              <label>550.000đ - Trở lên</label>
+            <div onClick={(e) => handleCheck(e)}>
+              <div className="flex gap-2">
+                <input
+                  type="radio"
+                  // onClick={(e) => handleCheck(e, "from0To1")}
+                  name="price"
+                  value={"fromTo1"}
+                  checked={checkPrice === "fromTo1"}
+                />
+                <label>0đ - 100.000đ</label>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="radio"
+                  // onClick={(e) => handleCheck(e, "from1To25")}
+                  name="price"
+                  value={"from1To25"}
+                  checked={checkPrice === "from1To25"}
+                />
+                <label>100.000đ - 250.000đ</label>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="radio"
+                  // onClick={(e) => handleCheck(e, "from25To55")}
+                  name="price"
+                  value={"from25To55"}
+                  checked={checkPrice === "from25To55"}
+                />
+                <label>250.000đ - 550.000đ</label>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="radio"
+                  // onClick={(e) => handleCheck(e, "from55ToHight")}
+                  value="from55ToHight"
+                  name="price"
+                  checked={checkPrice === "from55ToHight"}
+                />
+                <label>550.000đ - Trở lên</label>
+              </div>
             </div>
           </div>
           <div className="text-[14px] flex flex-col gap-2">
             <h3 className="text-[16px] font-semibold">Ngôn ngữ</h3>
             <div className="flex gap-2">
-              <input type="checkbox" />
+              <input type="radio" />
               <label>Tiếng Việt</label>
             </div>
             <div className="flex gap-2">
-              <input type="checkbox" />
+              <input type="radio" />
               <label>Tiếng Anh</label>
             </div>
           </div>

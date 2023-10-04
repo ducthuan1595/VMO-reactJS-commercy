@@ -74,7 +74,7 @@ const Header = () => {
     }
   };
 
-  console.log(itemSearch);
+  // console.log(itemSearch);
 
   return (
     <div className="w-full h-[120px] bg-gradient-to-b from-primary-color to-[#fe6232] text-[white]">
@@ -104,7 +104,10 @@ const Header = () => {
           {isLogin ? (
             <div className="group relative">
               <span className="hover:opacity-80 cursor-pointer">
-                <i className="fa-solid fa-user"></i> {currUser.username}
+                <i className="fa-solid fa-user"></i>{" "}
+                {currUser.accountName
+                  ? currUser.accountName
+                  : currUser.username}
               </span>
               <div className="group-hover:block transition duration-75 ease-in delay-150 absolute hidden z-20 right-0 top-[30px] create-before-stage bg-white p-4 text-[#333] w-[160px] rounded-md hover:delay-300">
                 <ul>

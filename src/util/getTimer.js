@@ -1,4 +1,4 @@
-export const formatTimer = (time, isHour) => {
+export const formatTimer = (time, isHour, isDate) => {
   const date = new Date(time);
 
   if (isHour) {
@@ -7,7 +7,9 @@ export const formatTimer = (time, isHour) => {
     }:${
       date.getMinutes() > 10 ? date.getMinutes() : date.getMinutes() + "0"
     } - ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  } else if (isDate) {
+    return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
   } else {
-    return `${date.getDate()}/${date.getMonth() + 1}`;
+    return `${date.getDate()}/${date.getMonth() + 1} `;
   }
 };

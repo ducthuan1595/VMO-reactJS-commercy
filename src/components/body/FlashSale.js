@@ -27,7 +27,7 @@ export default function FlashSale() {
   }, []);
 
   useEffect(() => {
-    if (itemSale) {
+    if (itemSale && itemSale.length) {
       let minDate = itemSale[0].flashSaleId.end_date;
       for (let i = 1; i < itemSale.length; i++) {
         if (itemSale[i].flashSaleId.end_date < minDate) {
@@ -38,7 +38,7 @@ export default function FlashSale() {
     }
   }, [itemSale]);
 
-  console.log(timer);
+  console.log(itemSale);
 
   return (
     <div className="bg-[white] rounded-sm">
