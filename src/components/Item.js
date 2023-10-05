@@ -84,7 +84,7 @@ export default function Item({
         <i className="fa-solid fa-star"></i>
         <i className="fa-solid fa-star"></i>
         <i className="fa-solid fa-star"></i>
-        <i class="fa-regular fa-star"></i>
+        <i className="fa-regular fa-star"></i>
         <span>({page})</span>
       </div>
     </div>

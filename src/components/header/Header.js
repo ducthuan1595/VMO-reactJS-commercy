@@ -101,7 +101,7 @@ const Header = () => {
           <span className="cursor-pointer hover:opacity-80">
             <i className="fa-solid fa-circle-info"></i> Hỗ trợ
           </span>
-          {isLogin ? (
+          {isLogin && currUser ? (
             <div className="group relative">
               <span className="hover:opacity-80 cursor-pointer">
                 <i className="fa-solid fa-user"></i>{" "}
@@ -146,7 +146,7 @@ const Header = () => {
             </span>
           )}
 
-          {!isLogin && (
+          {!isLogin && !currUser && (
             <span
               className="cursor-pointer hover:opacity-80"
               onClick={() => navigate("/login")}

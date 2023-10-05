@@ -140,9 +140,9 @@ export default function DetailInfor({ detailItem }) {
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star"></i>
-                <i class="fa-regular fa-star"></i>
+                <i className="fa-regular fa-star"></i>
 
-                <i class="fa-regular fa-star"></i>
+                <i className="fa-regular fa-star"></i>
                 <span>({detailItem?.weight} đánh giá)</span>
                 <span className="text-[#333] border-l-[1px] border-solid border-[#dbdbdb] ml-4 px-4">
                   Đã bán:{" "}

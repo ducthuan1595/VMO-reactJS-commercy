@@ -79,7 +79,7 @@ export default function Order() {
   return (
     <MainLayout>
       <div className="text-[22px] font-semibold w-full bg-white p-5 rounded.md text-primary-color">
-        <i class="fa-solid fa-cart-arrow-down mr-2"></i>
+        <i className="fa-solid fa-cart-arrow-down mr-2"></i>
         GIỎ HÀNG
       </div>
       <div className="border-[1px] border-solid bg-[#fffef4] border-[#fbe104] p-2 rounded-md my-4 bg-[white] w-full">

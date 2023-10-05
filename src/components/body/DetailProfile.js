@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 import { login } from "../../store/userSlice";
 import { requests } from "../../api/service";
+import handleToast from "../../util/toast";
 
 export default function DetailProfile() {
   const dispatch = useDispatch();
@@ -28,6 +30,9 @@ export default function DetailProfile() {
       const res = await requests.updateUser(inputValue, token);
       if (res.data.message === "ok") {
         dispatch(login(res.data));
+        handleToast(toast.success, "Lưu thành công!");
+      } else {
+        handleToast(toast.warn, "Kiểm tra lại nhé");
       }
     }
   };
@@ -78,7 +83,6 @@ export default function DetailProfile() {
             />
             <input
               type="number"
-              placeholder="0345678923"
               onChange={(e) => handleChangeInput(e, "phone")}
               value={inputValue.phone}
               className="p-2 bg-border-color"

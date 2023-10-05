@@ -62,7 +62,7 @@ export default function ListCategory() {
       null,
       null
     );
-  }, [search]);
+  }, []);
 
   const handleListItemCategory = (name) => {
     getItemCategory(name, null, null);
@@ -109,6 +109,8 @@ export default function ListCategory() {
       setCheckPrice(e.target.value);
     }
   };
+
+  // console.log(location?.state?.state);
 
   return (
     <MainLayout>

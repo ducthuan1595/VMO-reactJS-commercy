@@ -12,7 +12,7 @@ import ListItem from "../components/body/ListItem";
 const Home = () => {
   const [pageItem, setPageItem] = useState([]);
 
-  const limit = 20;
+  const limit = 18;
   const fetchItem = async (page) => {
     const res = await requests.getItem(
       null,

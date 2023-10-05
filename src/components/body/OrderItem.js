@@ -75,7 +75,7 @@ export default function OrderItem({ order }) {
                         </button>
                       </div>
                     </td>
-                    <td className="h-full">
+                    <td className="h-full text-center">
                       {i.items.map((item) => {
                         return (
                           <div key={item._id} className="my-28">
@@ -87,7 +87,7 @@ export default function OrderItem({ order }) {
                       })}
                     </td>
 
-                    <td>
+                    <td className="text-center">
                       {i.items.map((item) => {
                         return (
                           <div key={item._id} className="my-28">
