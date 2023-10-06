@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const URL = "http://localhost:5050/api";
+const API_URl = process.env.REACT_APP_API_URL;
+export const URL = API_URl + "/api";
 
 export const requests = {
   register: (value) => {
