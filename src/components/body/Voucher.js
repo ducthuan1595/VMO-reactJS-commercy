@@ -51,7 +51,7 @@ export default function Voucher() {
             return (
               <SwiperSlide key={v._id}>
                 <img
-                  src={`${URL}/image/${v.pic}`}
+                  src={v.pic.url}
                   alt={v.code}
                   className="rounded-xl w-full"
                 />

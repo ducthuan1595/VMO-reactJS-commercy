@@ -89,7 +89,7 @@ export default function DetailInfor({ detailItem }) {
             </button>
             <img
               className=""
-              src={`${URL}/image/${detailItem?.pic[sliderNumber]}`}
+              src={detailItem?.pic[sliderNumber].url}
               alt={detailItem?.name}
             />
             <button
@@ -103,7 +103,7 @@ export default function DetailInfor({ detailItem }) {
       )}
       <div className="w-[40%]">
         <img
-          src={`${URL}/image/${detailItem?.pic[0]}`}
+          src={detailItem?.pic[0].url}
           alt={detailItem?.name}
           className="h-[460px] block mx-auto"
         />
@@ -114,7 +114,7 @@ export default function DetailInfor({ detailItem }) {
                 <div key={index}>
                   <img
                     onClick={handleShowImage.bind(null, index)}
-                    src={`${URL}/image/${image}`}
+                    src={image.url}
                     alt={detailItem?.name}
                     className="w-[80px]"
                   />

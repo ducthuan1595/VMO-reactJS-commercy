@@ -54,11 +54,7 @@ export default function Item({
       onClick={showDetail}
     >
       <div className="mb-2 relative">
-        <img
-          src={`${URL}/image/${pic[0]}`}
-          alt={name}
-          className="h-[200px] block mx-auto"
-        />
+        <img src={pic[0].url} alt={name} className="h-[200px] block mx-auto" />
         {percent && !isBorder && (
           <div className="absolute percent-sale">
             <span className="percent text-[16px]">{percent}%</span>

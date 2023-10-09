@@ -56,7 +56,7 @@ export default function OrderItem({ order }) {
                         return (
                           <div key={item._id} className="flex w-[400px]">
                             <img
-                              src={`${URL}/image/${item.itemId.pic[0]}`}
+                              src={item.itemId.pic[0].url}
                               alt={item.itemId.name}
                               className="h-[120px] w-[120px] my-4 ml-4 object-contain"
                             />

@@ -65,7 +65,7 @@ export default function Category() {
                 }}
               >
                 <img
-                  src={`${URL}/image/${c.banner[0]}`}
+                  src={c.banner.url}
                   alt={c.name}
                   className="h-[140px] block mx-auto"
                 />

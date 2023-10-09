@@ -96,7 +96,7 @@ export default function Payment() {
                   <tr key={i._id} className="text-center">
                     <td className="flex w-[240px] text-start">
                       <img
-                        src={`${URL}/image/${i.itemId.pic[0]}`}
+                        src={i.itemId.pic[0].url}
                         alt={i.itemId.name}
                         className="h-[120px] my-4 ml-4"
                       />
