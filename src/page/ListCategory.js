@@ -45,7 +45,6 @@ export default function ListCategory() {
         null,
         null
       );
-      console.log(res.data.data);
       if (res.data.message === "ok") {
         setListItem(res.data.data);
         search.set("category", name);
@@ -77,7 +76,7 @@ export default function ListCategory() {
 
   const handleFilterPrice = async () => {
     if (priceHeight && priceLow) {
-      const res = await requests.getItemWithPrice(priceLow, priceHeight);
+      const res = await requests.getItemWithPrice(priceLow, priceHeight, name);
       if (res.data.message === "ok") {
         setListItem(res.data.data);
       }
@@ -91,7 +90,7 @@ export default function ListCategory() {
       if (checkPrice) {
         const hight = listPrice[checkPrice][1];
         const low = listPrice[checkPrice][0];
-        const res = await requests.getItemWithPrice(low, hight);
+        const res = await requests.getItemWithPrice(low, hight, name);
         if (res.data.message === "ok") {
           setListItem(res.data.data);
         }
@@ -100,7 +99,7 @@ export default function ListCategory() {
   };
   useEffect(() => {
     handleFilterPrice();
-  }, [checkPrice, priceHeight, priceLow]);
+  }, [checkPrice, priceHeight, priceLow, name]);
 
   const handleCheck = async (e) => {
     if (e.target.checked) {
@@ -109,8 +108,6 @@ export default function ListCategory() {
       setCheckPrice(e.target.value);
     }
   };
-
-  // console.log(location?.state?.state);
 
   return (
     <MainLayout>
@@ -221,7 +218,12 @@ export default function ListCategory() {
             <div>
               <select
                 className="text-[14px] bg-white"
-                onChange={(e) => selectChange(e, "name")}
+                onChange={(e) => {
+                  selectChange(e, "name");
+                  setCheckPrice("");
+                  setPriceLow("");
+                  setPriceHight("");
+                }}
               >
                 <option value={"asc"}>Danh mục</option>
                 <option value={"desc"}>Tên</option>
@@ -230,7 +232,12 @@ export default function ListCategory() {
             <div>
               <select
                 className="text-[14px] bg-white"
-                onChange={(e) => selectChange(e, "pricePay")}
+                onChange={(e) => {
+                  selectChange(e, "pricePay");
+                  setCheckPrice("");
+                  setPriceLow("");
+                  setPriceHight("");
+                }}
               >
                 <option>Giá</option>
                 <option value={"asc"}>Thấp tới cao</option>

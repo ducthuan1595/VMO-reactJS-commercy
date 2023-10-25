@@ -2,8 +2,14 @@ import React from "react";
 import { URL } from "../../api/service";
 import { formatTimer } from "../../util/getTimer";
 
-export default function OrderItem({ order }) {
-  console.log(order);
+export default function OrderItem({ orders, results, fetchOrder }) {
+  const handleAddItem = () => {
+    const page = ++results.currPage;
+    if (page <= +results.totalPage) {
+      fetchOrder(page);
+    }
+  };
+
   return (
     <div className="w-full rounded-md">
       <table className="w-full">
@@ -16,8 +22,8 @@ export default function OrderItem({ order }) {
           </tr>
         </thead>
         <tbody className="">
-          {order &&
-            order.orders.map((i) => {
+          {orders &&
+            orders.map((i) => {
               const status = {
                 D0: "Đang giao",
                 D1: "Hoàn thành",
@@ -108,6 +114,18 @@ export default function OrderItem({ order }) {
             })}
         </tbody>
       </table>
+      {results?.currPage == results?.totalPage ? (
+        ""
+      ) : (
+        <div className="bg-white p-6">
+          <button
+            onClick={handleAddItem}
+            className="text-[white] bg-gradient-to-b from-primary-color to-[#fe6232] py-2 px-12 rounded-xl mx-auto block"
+          >
+            {results?.currPage == results?.totalPage ? "Het rui" : "Xem thêm"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

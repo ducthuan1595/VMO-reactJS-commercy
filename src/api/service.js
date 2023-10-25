@@ -86,8 +86,10 @@ export const requests = {
     );
   },
 
-  getItemWithPrice: (low, hight) => {
-    return axios.get(`${URL}/get-item-follow-price?low=${low}&hight=${hight}`);
+  getItemWithPrice: (low, hight, name) => {
+    return axios.get(
+      `${URL}/get-item-follow-price?low=${low}&hight=${hight}&name=${name}`
+    );
   },
 
   getItemFlashSale: () => {

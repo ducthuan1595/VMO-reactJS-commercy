@@ -7,34 +7,34 @@ import OrderItem from "../components/body/OrderItem";
 import { requests } from "../api/service";
 
 export default function Purchase() {
-  const [order, setOrder] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [results, setResult] = useState(null);
   const token = useSelector((state) => state.auth.token);
 
-  useEffect(() => {
-    const fetchOrder = async () => {
-      if (token) {
-        const value = {
-          limit: 10,
-          page: 1,
-          type: null,
-          column: null,
-        };
-        const res = await requests.getOrder(value, token);
-        console.log(res.data);
-        if (res.data.message === "ok") {
-          setOrder(res.data.data);
-        }
+  const fetchOrder = async (page) => {
+    if (token) {
+      const value = {
+        limit: 5,
+        page,
+        type: null,
+        column: null,
+      };
+      const res = await requests.getOrder(value, token);
+      if (res.data.message === "ok") {
+        setResult(res.data.data);
+        setOrders((state) => [...state, ...res.data.data.orders]);
       }
-    };
-    fetchOrder();
+    }
+  };
+  useEffect(() => {
+    fetchOrder(1);
   }, []);
 
-  console.log({ order });
   return (
     <MainLayout>
       <div className="w-full flex gap-8 pb-16 rounded-t-xl">
         <Profile />
-        <OrderItem order={order} />
+        <OrderItem orders={orders} results={results} fetchOrder={fetchOrder} />
       </div>
     </MainLayout>
   );

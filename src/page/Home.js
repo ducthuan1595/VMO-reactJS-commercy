@@ -35,7 +35,6 @@ const Home = () => {
     fetchItem(1);
   }, []);
 
-  console.log("item", pageItem);
   return (
     <MainLayout>
       <div className="flex flex-col gap-5">
