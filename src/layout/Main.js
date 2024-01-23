@@ -5,7 +5,7 @@ const MainLayout = ({ children }) => {
   return (
     <div className="bg-[#f0f0f0]">
       <Header />
-      <div className="w-[1200px] m-auto flex flex-col items-center my-8">
+      <div className="max-w-[1200px] m-auto flex flex-col items-center my-8">
         {children}
       </div>
       <Footer />

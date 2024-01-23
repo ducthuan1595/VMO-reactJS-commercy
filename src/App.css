@@ -135,3 +135,44 @@ tr:nth-child(even) {
   right       : 4px;
   top         : -29px;
 }
+
+/* Review star */
+.review-body__stars, 
+.review-body__stars--big {
+  position: relative;
+  display : inline-block;
+}
+
+.review-body__stars-inner,
+.review-body__stars-inner--big {
+  position   : absolute;
+  top        : 0;
+  left       : 0;
+  white-space: nowrap;
+  overflow   : hidden;
+  width      : 0;
+}
+
+.review-body__stars::before,
+.review-body__stars--big::before {
+  content    : "\f005 \f005 \f005 \f005 \f005";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size  : 10px;
+  color      : #ccc;
+}
+.review-body__stars--big::before {
+  font-size: 18px;
+}
+
+.review-body__stars-inner::before,
+.review-body__stars-inner--big::before {
+  content    : "\f005 \f005 \f005 \f005 \f005";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size  : 10px;
+  color      : #ff9f46;
+}
+.review-body__stars-inner--big::before {
+  font-size: 18px;
+}

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addCart } from "../../store/userSlice";
 import { requests } from "../../api/service";
 import { URL } from "../../api/service";
-import Modal from "../../layout/Modal";
+import Modal from "../modal/Modal";
 
 export default function DetailInfor({ detailItem }) {
   const currUser = useSelector((state) => state.auth.userCurr);

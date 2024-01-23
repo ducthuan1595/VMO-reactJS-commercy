@@ -18,9 +18,6 @@ const Header = () => {
   const [openSearch, setOpenSearch] = useState(false);
   const [itemSearch, setItemSearch] = useState(null);
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
 
   useEffect(() => {
     if (currUser && currUser.cart?.length > 0) {
@@ -78,7 +75,7 @@ const Header = () => {
 
   return (
     <div className="w-full h-[120px] bg-gradient-to-b from-primary-color to-[#fe6232] text-[white]">
-      <div className="w-[1200px] m-auto flex justify-between items-center">
+      <div className="hidden lg:flex max-w-[1200px] m-auto justify-between items-center">
         <div className="my-1 flex gap-4">
           <span className="cursor-pointer download-app relative hover:opacity-80">
             Tải ứng dụng
@@ -156,11 +153,11 @@ const Header = () => {
           )}
         </div>
       </div>
-      <div className="w-[1200px] m-auto flex justify-between items-center">
+      <div className="max-w-[1200px] m-auto flex justify-between items-center">
         <div className="cursor-pointer" onClick={() => navigate("/")}>
           <img src="/logo/book_logo.png" className="h-20" alt="logo" />
         </div>
-        <div className="w-[800px] relative h-12 leading-8 flex justify-between items-center bg-[white] p-2 rounded-md">
+        <div className="w-[100px] md:w-[400px] lg:w-[800px] relative h-12 leading-8 flex justify-between items-center bg-[white] p-2 rounded-md">
           <input
             name="search"
             type="text"

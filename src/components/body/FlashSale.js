@@ -49,23 +49,23 @@ export default function FlashSale() {
         {/* <Countdown date={Number(timer)} renderer={rerender} autoStart={true} /> */}
         <CountDown timer={timer} />
       </div>
-      <div className="w-[1200px] h-[400px] flex justify-between gap-2 pt-4">
+      <div className="max-w-[1200px] h-[400px] flex justify-between gap-2 pt-4">
         <Swiper
-          // slidesPerView={5}
-          // // spaceBetween={30}
-          // centeredSlides={true}
-          // freeMode={true}
-          // pagination={{
-          //   clickable: true,
-          // }}
-          // scrollbar={{
-          //   hide: true,
-          // }}
-          // modules={[FreeMode, Pagination, Scrollbar]}
-          // className="mySwiper"
           watchSlidesProgress={true}
-          slidesPerView={6}
+          slidesPerView={1}
+          // spaceBetween={10}
           className="mySwiper"
+          breakpoints={{
+            640: {
+              slidesPerView: 2,
+            },
+            768: {
+              slidesPerView: 4,
+            },
+            1024: {
+              slidesPerView: 6,
+            },
+          }}
         >
           {itemSale &&
             itemSale.map((i) => {

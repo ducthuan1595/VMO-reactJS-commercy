@@ -3,10 +3,10 @@ import News from "./News";
 
 export default function Footer() {
   return (
-    <div className="w-[1200px] mx-auto bg-[white] pb-16 rounded-t-xl">
+    <div className="w-full md:px-5 lg:w-[1200px] mx-auto bg-[white] pb-16 rounded-t-xl">
       <News />
       <div className="w-full flex pt-[60px]">
-        <div className="flex flex-col gap-4 p-4 border-r-[1px] border-solid border-border-color w-[40%]">
+        <div className="hidden lg:flex flex-col gap-4 p-4 border-r-[1px] border-solid border-border-color w-[40%]">
           <div>
             <img
               src="/logo/book_logo.png"
@@ -41,8 +41,8 @@ export default function Footer() {
             />
           </div>
         </div>
-        <div className="w-[60%] px-4">
-          <div className="grid grid-cols-3">
+        <div className="w-full md:px-5 lg:w-[60%] px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <ul className="list-none flex flex-col gap-4 px-4">
               <li className="text-[22px] font-semibold">DỊCH VỤ</li>
               <li className="cursor-pointer hover:text-primary-color hover:translate-x-1 scroll-smooth">
@@ -89,7 +89,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-          <div className="flex flex-col gap-4 px-4 mt-4">
+          <div className="flex flex-wrap flex-col gap-4 px-4 mt-4">
             <h2 className="text-[22px] font-semibold">LIÊN HỆ</h2>
             <ul className="flex items-center justify-between">
               <li>

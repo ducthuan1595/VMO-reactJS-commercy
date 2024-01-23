@@ -48,7 +48,7 @@ export default function Category() {
         </span>
         <div className="border-[1px] border-solid border-border-color mt-4"></div>
       </div>
-      <div className="flex items-center justify-center gap-1 py-4">
+      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 items-center justify-center gap-1 py-4">
         {categories &&
           categories.map((c) => {
             return (

@@ -1,14 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import { URL } from "../../api/service";
 import { formatTimer } from "../../util/getTimer";
+import ReviewModal from "../modal/ReviewModal";
+import Modal from "../modal/Modal";
 
 export default function OrderItem({ orders, results, fetchOrder }) {
+  const [isPopup, setIsPopup] = useState(false);
+  const [order, setOrder] = useState([]);
+
   const handleAddItem = () => {
     const page = ++results.currPage;
     if (page <= +results.totalPage) {
       fetchOrder(page);
     }
   };
+
+  const handleReview = (order) => {
+    setIsPopup(true);
+    setOrder(() => [...order]);
+  }
+
+  if(isPopup && order.length > 0) {
+    return (
+      <>
+        <Modal setOpen={setIsPopup} />
+        <ReviewModal order={order} />
+      </>
+    );
+  }
 
   return (
     <div className="w-full rounded-md">
@@ -76,7 +95,7 @@ export default function OrderItem({ orders, results, fetchOrder }) {
                         <button className="border-[2px] border-solid border-border-color p-2 rounded-md text">
                           Mua lại
                         </button>
-                        <button className="bg-primary-color p-2 rounded-md text-white">
+                        <button onClick={() => handleReview(i.items)} className="bg-primary-color p-2 rounded-md text-white">
                           Đánh giá
                         </button>
                       </div>

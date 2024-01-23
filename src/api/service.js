@@ -160,4 +160,20 @@ export const requests = {
       }
     );
   },
+
+  // Review
+  createReview: (value, token) => {
+    return axios.post(
+      `${URL}/v2/review`,
+      {...value},
+      {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
 };

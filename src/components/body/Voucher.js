@@ -32,7 +32,7 @@ export default function Voucher() {
   }, []);
 
   return (
-    <div className="w-[1200px] h-[300px] flex justify-between gap-2">
+    <div className="hidden md:flex max-w-[1200px] h-[300px] justify-between gap-2">
       <Swiper
         spaceBetween={30}
         autoplay={{
@@ -59,19 +59,19 @@ export default function Voucher() {
             );
           })}
       </Swiper>
-      <div className="">
+      <div className="hidden lg:block">
         <div>
           <img
             src="/images/banner1.png"
             alt="banner"
-            className="h-[150px] w-[300px]"
+            className="h-[150px] max-w-[300px]"
           />
         </div>
         <div>
           <img
             src="/images/banner2.png"
             alt="banner"
-            className="h-[150px] w-[300px]"
+            className="h-[150px] max-w-[300px]"
           />
         </div>
       </div>
