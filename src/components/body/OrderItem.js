@@ -1,12 +1,17 @@
-import React, { useState } from "react";
-import { URL } from "../../api/service";
+import React, { useEffect, useState } from "react";
+import {useSelector} from 'react-redux'
+
+import { URL, requests } from "../../api/service";
 import { formatTimer } from "../../util/getTimer";
 import ReviewModal from "../modal/ReviewModal";
 import Modal from "../modal/Modal";
 
 export default function OrderItem({ orders, results, fetchOrder }) {
+  const token = useSelector((state) => state.auth.token);
   const [isPopup, setIsPopup] = useState(false);
-  const [order, setOrder] = useState([]);
+  const [item, setItem] = useState();
+  const [reviews, setReviews] = useState([]);
+  const [isEdit, setIsEdit] = useState();
 
   const handleAddItem = () => {
     const page = ++results.currPage;
@@ -15,19 +20,30 @@ export default function OrderItem({ orders, results, fetchOrder }) {
     }
   };
 
-  const handleReview = (order) => {
-    setIsPopup(true);
-    setOrder(() => [...order]);
-  }
+  useEffect(() => {
+    const fetchReview = async() => {
+      const res = await requests.getReview(token);
+      if(res.data.message === 'ok') {
+        setReviews(res.data.data);
+      }
+    }
+    fetchReview();
+  }, [token, isPopup]);
 
-  if(isPopup && order.length > 0) {
+  const handleReview = (item, isEdit) => {
+    setItem(item);
+    setIsEdit(isEdit);
+    setIsPopup(true);
+  }
+  if(isPopup && item) {
     return (
       <>
         <Modal setOpen={setIsPopup} />
-        <ReviewModal order={order} />
+        <ReviewModal item={item} setIsPopup={setIsPopup} isEdit={isEdit} />
       </>
     );
   }
+
 
   return (
     <div className="w-full rounded-md">
@@ -37,7 +53,7 @@ export default function OrderItem({ orders, results, fetchOrder }) {
             <th>Sản Phẩm</th>
             <th>Đơn Giá</th>
             <th>Số Lượng</th>
-            <th>Trạng thái</th>
+            <th>Đánh giá</th>
           </tr>
         </thead>
         <tbody className="">
@@ -60,7 +76,7 @@ export default function OrderItem({ orders, results, fetchOrder }) {
                       <div className="flex justify-around mt-8 mb-2 font-medium text-[16px]">
                         <span>
                           Đặt hàng từ ngày:{" "}
-                          {formatTimer(Date.now(i.createdAt), null, true)}
+                          {formatTimer(new Date(i.createdAt), null, true)}
                         </span>
                         <span>Tổng số lượng: {i.quantity}</span>
                         <span>
@@ -91,22 +107,15 @@ export default function OrderItem({ orders, results, fetchOrder }) {
                           </div>
                         );
                       })}
-                      <div className="flex gap-12 my-4 ml-8">
-                        <button className="border-[2px] border-solid border-border-color p-2 rounded-md text">
-                          Mua lại
-                        </button>
-                        <button onClick={() => handleReview(i.items)} className="bg-primary-color p-2 rounded-md text-white">
-                          Đánh giá
-                        </button>
-                      </div>
                     </td>
-                    <td className="h-full text-center">
+                    <td className="h-full flex flex-col justify-center items-center text-center">
                       {i.items.map((item) => {
                         return (
-                          <div key={item._id} className="my-28">
+                          <div key={item._id} className="pt-[4rem] pb-[5rem]">
                             {Math.floor(item.itemId.pricePay * item.quantity)
                               .toString()
                               .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                            đ
                           </div>
                         );
                       })}
@@ -115,18 +124,40 @@ export default function OrderItem({ orders, results, fetchOrder }) {
                     <td className="text-center">
                       {i.items.map((item) => {
                         return (
-                          <div key={item._id} className="my-28">
+                          <div key={item._id} className="pt-[3rem] pb-[6rem]">
                             {item.quantity}
                           </div>
                         );
                       })}
                     </td>
-                    {/* <td className="">
-                    {Math.floor(i.amount)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                  </td> */}
-                    <td style={{ color: `${textColor}` }}>{currStatus}</td>
+                    <td className="h-full flex flex-col justify-center items-center text-center">
+                      {i.items.map((item) => {
+                        let isItem = reviews.find(v => v.itemId == item.itemId._id);
+                      return (
+                        <div key={item._id} className="pt-[3rem] pb-[5rem]">
+                          <button
+                            onClick={() => handleReview(item.itemId, isItem)}
+                            className="p-2 rounded-md text-white t-box-shadow"
+                            style={{
+                              backgroundColor: isItem ? "#f2ca59" : "#f9512f",
+                            }}
+                          >
+                            {isItem ? "Sửa đánh giá" : "Chưa đánh giá"}
+                          </button>
+                        </div>
+                      );})}
+                    </td>
+                  </tr>
+                  <tr className="bg-white w-full">
+                    <td colSpan={4}>
+                      <div className="w-full flex items-center gap-12 my-4 ml-8">
+                        <button className="border-[2px] border-solid border-border-color p-2 rounded-md">
+                          Mua lại
+                        </button>
+
+                        <div style={{ color: `${textColor}` }}>{currStatus}</div>
+                      </div>
+                    </td>
                   </tr>
                 </React.Fragment>
               );

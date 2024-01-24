@@ -75,6 +75,14 @@ export default function Order() {
     }
   };
 
+  if(currUser.cart.length < 1) {
+    return (
+      <MainLayout>
+        <div>Hay chon mua san pham</div>
+      </MainLayout>
+    )
+  }
+
   // console.log({ checkCartArrId });
   return (
     <MainLayout>

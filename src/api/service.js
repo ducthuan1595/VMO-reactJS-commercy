@@ -165,7 +165,33 @@ export const requests = {
   createReview: (value, token) => {
     return axios.post(
       `${URL}/v2/review`,
-      {...value},
+      { ...value },
+      {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+
+  getReview: (token, itemId) => {
+    return axios.get(`${URL}/v2/review?itemId=${itemId}`, {
+      validateStatus: function (status) {
+        return status < 500;
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+
+  updateReview: (value, token) => {
+    return axios.put(
+      `${URL}/v2/review`,
+      { ...value },
       {
         validateStatus: function (status) {
           return status < 500;

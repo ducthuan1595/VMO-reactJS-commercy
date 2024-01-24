@@ -162,7 +162,7 @@ tr:nth-child(even) {
   color      : #ccc;
 }
 .review-body__stars--big::before {
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .review-body__stars-inner::before,
@@ -174,5 +174,11 @@ tr:nth-child(even) {
   color      : #ff9f46;
 }
 .review-body__stars-inner--big::before {
-  font-size: 18px;
+  font-size: 24px;
+}
+
+.t-box-shadow:hover {
+  -webkit-box-shadow: 0px 10px 24px 0px rgba(4, 23, 118, 0.3);
+  -moz-box-shadow   : 0px 10px 24px 0px rgba(4, 23, 118, 0.3);
+  box-shadow        : 0px 10px 24px 0px rgba(4, 23, 118, 0.3);
 }
