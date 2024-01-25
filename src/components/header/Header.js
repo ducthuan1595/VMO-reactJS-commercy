@@ -196,7 +196,7 @@ const Header = () => {
           )}
         </div>
         <div
-          className="text-3xl cursor-pointer relative"
+          className="text-3xl cursor-pointer relative shake-bottom "
           onClick={() => navigate("/order")}
         >
           <i className="fa-solid fa-cart-shopping mr-[5px]"></i>

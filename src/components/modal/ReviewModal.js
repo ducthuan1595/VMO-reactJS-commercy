@@ -1,20 +1,35 @@
 import {useSelector} from 'react-redux';
+import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from 'react';
 import {toast} from 'react-toastify';
 
 import Avatar from '../Avatar';
 import { requests } from '../../api/service';
 import handleToast from '../../util/toast';
+import UploadImage from '../inputs/UploadImage';
 
 const ReviewModal = ({ item, setIsPopup, isEdit }) => {
   const token = useSelector((state) => state.auth.token);
+  const currUser = useSelector((state) => state.auth.userCurr);
+  const navigate = useNavigate();
+
   const divEls = useRef();
   const [comment, setComment] = useState(isEdit ? isEdit.comment : '');
   const [stars, setStars] = useState(isEdit ? isEdit.stars : 0);
+  const [urlImage, setUrlImage] = useState(isEdit ? isEdit.picture : [])
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     divEls.current.style.width = stars + "%";
   }, [stars]);
+
+  if (!currUser) {
+    return navigate("/login");
+  }
+
+  const handleUploadImage = (result) => {
+    setUrlImage(result)
+  }
 
   const handleSend = async () => {
     if (!token || !comment) {
@@ -30,6 +45,7 @@ const ReviewModal = ({ item, setIsPopup, isEdit }) => {
         const value = {
           comment,
           stars,
+          picture: urlImage,
           reviewId: isEdit._id
         };
         const res = await requests.updateReview(value, token);
@@ -43,6 +59,7 @@ const ReviewModal = ({ item, setIsPopup, isEdit }) => {
           comment,
           itemId: item._id,
           stars,
+          picture: urlImage,
         };
         const res = await requests.createReview(value, token);
         if (res.data.message === "ok") {
@@ -79,7 +96,7 @@ const ReviewModal = ({ item, setIsPopup, isEdit }) => {
         </div>
         <div className="border-t-[1px] border-neutral-200"></div>
         <div className="flex justify-between items-center">
-          <Avatar />
+          <Avatar user={currUser} />
           <div className="review-body__stars--big ml-7 cursor-pointer">
             <input
               className="absolute right-0 left-0 opacity-0 py-[5px] z-10"
@@ -94,6 +111,13 @@ const ReviewModal = ({ item, setIsPopup, isEdit }) => {
           </div>
         </div>
         <div>
+          <UploadImage
+            onChange={handleUploadImage}
+            SetIsLoading={setIsLoading}
+            urlImage={urlImage}
+          />
+        </div>
+        <div>
           <input
             type="text"
             placeholder="Viết đánh giá của bạn"
@@ -104,10 +128,15 @@ const ReviewModal = ({ item, setIsPopup, isEdit }) => {
         </div>
         <div className="mt-8 text-right">
           <button
+            disabled={isLoading}
             onClick={handleSend}
             className="bg-red-500 text-white px-4 py-1 rounded-md hover:opacity-70"
           >
-            {isEdit ? "Thay đổi" : "Đánh giá"}
+            {isLoading ? (
+              <i className="fa-solid fa-spinner animate-spin"></i>
+            ) : (
+              <>{isEdit ? "Thay đổi" : "Đánh giá"}</>
+            )}
           </button>
         </div>
       </div>

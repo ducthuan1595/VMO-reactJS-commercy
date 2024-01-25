@@ -88,6 +88,11 @@ export default function OrderItem({ orders, results, fetchOrder }) {
                             đ
                           </span>
                         </span>
+                        <span className="px-2 bg-[#e9fb9fbd] rounded shake-horizontal">
+                          <div style={{ color: `${textColor}` }}>
+                            {currStatus}
+                          </div>
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -132,33 +137,26 @@ export default function OrderItem({ orders, results, fetchOrder }) {
                     </td>
                     <td className="h-full flex flex-col justify-center items-center text-center">
                       {i.items.map((item) => {
-                        let isItem = reviews.find(v => v.itemId == item.itemId._id);
-                      return (
-                        <div key={item._id} className="pt-[3rem] pb-[5rem]">
-                          <button
-                            onClick={() => handleReview(item.itemId, isItem)}
-                            className="p-2 rounded-md text-white t-box-shadow"
-                            style={{
-                              backgroundColor: isItem ? "#f2ca59" : "#f9512f",
-                            }}
-                          >
-                            {isItem ? "Sửa đánh giá" : "Chưa đánh giá"}
-                          </button>
-                        </div>
-                      );})}
+                        let isItem = reviews.find(
+                          (v) => v.itemId == item.itemId._id
+                        );
+                        return (
+                          <div key={item._id} className="pt-[3rem] pb-[5rem]">
+                            <button
+                              onClick={() => handleReview(item.itemId, isItem)}
+                              className="p-2 rounded-md text-white t-box-shadow"
+                              style={{
+                                backgroundColor: isItem ? "#f2ca59" : "#f9512f",
+                              }}
+                            >
+                              {isItem ? "Sửa đánh giá" : "Chưa đánh giá"}
+                            </button>
+                          </div>
+                        );
+                      })}
                     </td>
                   </tr>
-                  <tr className="bg-white w-full">
-                    <td colSpan={4}>
-                      <div className="w-full flex items-center gap-12 my-4 ml-8">
-                        <button className="border-[2px] border-solid border-border-color p-2 rounded-md">
-                          Mua lại
-                        </button>
-
-                        <div style={{ color: `${textColor}` }}>{currStatus}</div>
-                      </div>
-                    </td>
-                  </tr>
+                  
                 </React.Fragment>
               );
             })}

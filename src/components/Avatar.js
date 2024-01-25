@@ -1,13 +1,4 @@
-import {useSelector} from 'react-redux';
-import {useNavigate} from 'react-router-dom'
-
-const Avatar = ({isStar}) => {
-  const currUser = useSelector((state) => state.auth.userCurr);
-  const navigate = useNavigate();
-
-  if(!currUser) {
-    return navigate('/login');
-  }
+const Avatar = ({isStar, user}) => {
 
   return (
     <div className="flex justify-center items-center">
@@ -18,7 +9,7 @@ const Avatar = ({isStar}) => {
       />
       <div className="flex flex-col justify-center items-start">
         <h3 className="font-normal text-[12px] leading-[15px]">
-          {currUser.accountName ? currUser.accountName : "Account"}
+          {user?.accountName ? user.accountName : "Account"}
         </h3>
         {isStar && (
         <div className="review-body__stars leading-[12px]">

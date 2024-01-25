@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+
 import Item from "../Item";
 import { requests } from "../../api/service";
 
-import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
 import "swiper/css";
@@ -14,6 +15,7 @@ import CountDown from "../../util/CountDown";
 export default function FlashSale() {
   const [itemSale, setItemSale] = useState(null);
   const [timer, setTimer] = useState(0);
+  const [reviews, setReviews] = useState([]);
 
   const fetchItem = async () => {
     const res = await requests.getItemFlashSale();
@@ -27,6 +29,16 @@ export default function FlashSale() {
   }, []);
 
   useEffect(() => {
+    const fetchReview = async () => {
+      const res = await requests.getAllReview();
+      if (res.data.message === "ok") {
+        setReviews(res.data.data);
+      }
+    };
+    fetchReview();
+  }, [])
+
+  useEffect(() => {
     if (itemSale && itemSale.length) {
       let minDate = itemSale[0].flashSaleId.end_date;
       for (let i = 1; i < itemSale.length; i++) {
@@ -38,12 +50,11 @@ export default function FlashSale() {
     }
   }, [itemSale]);
 
-  console.log(itemSale);
 
   return (
     <div className="bg-[white] rounded-sm">
       <div className="bg-[#fcdab0] flex justify-start items-center gap-2 p-4">
-        <i className="fa-solid fa-bolt text-primary-color "></i>
+        <i className="fa-solid fa-bolt text-primary-color blink-1"></i>
         <span className="font-bold">FLASH SALE</span> |
         <p className="">Kết Thúc Trong</p>
         {/* <Countdown date={Number(timer)} renderer={rerender} autoStart={true} /> */}
@@ -69,6 +80,7 @@ export default function FlashSale() {
         >
           {itemSale &&
             itemSale.map((i) => {
+              const reviewItems = reviews.filter(review => review.itemId === i._id)
               return (
                 <SwiperSlide key={i._id}>
                   <Item
@@ -80,6 +92,7 @@ export default function FlashSale() {
                     page={i.weight}
                     isBorder={false}
                     id={i._id}
+                    reviewItems={reviewItems}
                   />
                 </SwiperSlide>
               );

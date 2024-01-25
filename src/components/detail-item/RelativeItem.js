@@ -6,9 +6,10 @@ import { requests } from "../../api/service";
 export default function RelativeItem({ detailItem }) {
   const [item, setItem] = useState([]);
   const [pageItem, setPageItem] = useState([]);
+  const [reviews, setReviews] = useState([]);
 
   const fetchItem = async (page) => {
-    const limit = 10;
+    const limit = 5;
     if (detailItem) {
       const res = await requests.getItem(
         detailItem.categoryId.name,
@@ -38,18 +39,15 @@ export default function RelativeItem({ detailItem }) {
     }
   }, [pageItem]);
 
-  // const handleNextPage = () => {
-  //   if (item && item.currPage && item.nextPage) {
-  //     const page = +item.currPage + 1;
-  //     fetchItem(page);
-  //   }
-  // };
-  // const handlePrevPage = () => {
-  //   if (item && item.currPage && item.prevPage) {
-  //     const page = +item.currPage - 1;
-  //     fetchItem(page);
-  //   }
-  // };
+   useEffect(() => {
+     const fetchReview = async () => {
+       const res = await requests.getAllReview();
+       if (res.data.message === "ok") {
+         setReviews(res.data.data);
+       }
+     };
+     fetchReview();
+   }, []);
 
   const handleAddItem = () => {
     if (pageItem && pageItem.totalPage && pageItem.currPage) {
@@ -65,8 +63,10 @@ export default function RelativeItem({ detailItem }) {
       <div className="text-[22px] font-semibold mb-4">SẢN PHẨM LIÊN QUAN</div>
       <div className="grid grid-cols-5 gap-y-4 pb-4 px-2">
         {item &&
-          item &&
           item.map((i) => {
+            const reviewItem = reviews.filter(
+              (review) => review.itemId === i._id
+            );
             return (
               <Item
                 pic={i.pic}
@@ -80,6 +80,7 @@ export default function RelativeItem({ detailItem }) {
                 setItem={setItem}
                 item={item}
                 key={i._id}
+                reviewItems={reviewItem}
               />
             );
           })}

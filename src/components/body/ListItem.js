@@ -1,14 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+import { requests } from "../../api/service";
 import Item from "../Item";
 
 export default function ListItem({ fetchItem, pageItem, limit }) {
   const [items, setItems] = useState([]);
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     if (pageItem && pageItem.products) {
       setItems((items) => items.concat(pageItem.products));
     }
   }, [pageItem]);
+
+   useEffect(() => {
+     const fetchReview = async () => {
+       const res = await requests.getAllReview();
+       if (res.data.message === "ok") {
+         setReviews(res.data.data);
+       }
+     };
+     fetchReview();
+   }, []);
 
   const handleAddItem = () => {
     if (pageItem && pageItem.totalPage && pageItem.currPage) {
@@ -30,6 +43,7 @@ export default function ListItem({ fetchItem, pageItem, limit }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-4 pb-4 px-2">
         {items &&
           items.map((i) => {
+            const reviewItem = reviews.filter(review => review.itemId === i._id)
             return (
               <Item
                 pic={i.pic}
@@ -41,6 +55,7 @@ export default function ListItem({ fetchItem, pageItem, limit }) {
                 isBorder={true}
                 id={i._id}
                 key={i._id}
+                reviewItems={reviewItem}
               />
             );
           })}

@@ -6,8 +6,9 @@ import { addCart } from "../../store/userSlice";
 import { requests } from "../../api/service";
 import { URL } from "../../api/service";
 import Modal from "../modal/Modal";
+import Star from "../Star";
 
-export default function DetailInfor({ detailItem }) {
+export default function DetailInfor({ detailItem, reviews }) {
   const currUser = useSelector((state) => state.auth.userCurr);
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
@@ -49,7 +50,6 @@ export default function DetailInfor({ detailItem }) {
           itemId: detailItem?._id,
         };
         const res = await requests.addCart(value, token);
-        console.log(res.data);
         if (res.data.message === "ok") {
           dispatch(addCart(res.data.data));
           return true;
@@ -134,23 +134,18 @@ export default function DetailInfor({ detailItem }) {
           <div className="flex justify-between">
             <div className="flex flex-col">
               <div>
-                Ngôn ngữ: <strong>Tiếng Việt</strong>
+                Ngôn ngữ: <strong>{detailItem?.language ?? 'Đang cập nhập'}</strong>
               </div>
               <div className="text-[#f6a500] text-left">
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-regular fa-star"></i>
-
-                <i className="fa-regular fa-star"></i>
-                <span>({detailItem?.weight} đánh giá)</span>
+                <Star reviewItems={reviews} isBig={true} />
+                <span>({reviews ? reviews.length : 0} đánh giá)</span>
                 <span className="text-[#333] border-l-[1px] border-solid border-[#dbdbdb] ml-4 px-4">
                   Đã bán:{" "}
-                  {detailItem?.count > 10000
-                    ? (detailItem?.count - 10000 + 1)
+                  {detailItem?.paid > 10000
+                    ? (detailItem?.paid - 10000 + 1)
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "k+"
-                    : detailItem?.count}
+                    : detailItem?.paid ?? 0}
                 </span>
               </div>
             </div>
@@ -159,7 +154,7 @@ export default function DetailInfor({ detailItem }) {
                 Tác giả: <strong>{detailItem?.author}</strong>
               </span>
               <span>
-                Số trang: <strong>{detailItem?.weight}</strong>
+                Số trang: <strong>{detailItem?.pages}</strong>
               </span>
             </div>
           </div>

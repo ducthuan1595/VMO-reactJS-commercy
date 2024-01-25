@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-
-import { URL } from "../api/service";
-import { requests } from "../api/service";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { requests } from "../api/service";
+import Star from "./Star";
 
 export default function Item({
   pic,
@@ -15,6 +15,7 @@ export default function Item({
   id,
   setItem,
   item,
+  reviewItems,
 }) {
   const navigate = useNavigate();
 
@@ -38,6 +39,7 @@ export default function Item({
         navigate(`/detail-item/${id}`, {
           state: {
             detailItem: res.data.data,
+            reviews: reviewItems ? reviewItems : [],
           },
         });
         window.scrollTo(0, 0);
@@ -56,7 +58,7 @@ export default function Item({
       <div className="mb-2 relative">
         <img src={pic[0].url} alt={name} className="h-[200px] block mx-auto" />
         {percent && !isBorder && (
-          <div className="absolute percent-sale">
+          <div className="absolute percent-sale shake-bottom">
             <span className="percent text-[16px]">{percent}%</span>
           </div>
         )}
@@ -75,13 +77,11 @@ export default function Item({
       <div className="font-light line-through text-left">
         {priceOrigin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ
       </div>
-      <div className="text-[#f6a500] text-[12px] text-left">
-        <i className="fa-solid fa-star"></i>
-        <i className="fa-solid fa-star"></i>
-        <i className="fa-solid fa-star"></i>
-        <i className="fa-solid fa-star"></i>
-        <i className="fa-regular fa-star"></i>
-        <span>({page})</span>
+      <div className="flex items-center text-[12px] text-left ">
+        <Star reviewItems={reviewItems} />
+        <span className="text-[#f6a500]">
+          ({reviewItems ? reviewItems.length : 0})
+        </span>
       </div>
     </div>
   );

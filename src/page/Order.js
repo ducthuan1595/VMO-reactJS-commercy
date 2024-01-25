@@ -90,7 +90,7 @@ export default function Order() {
         <i className="fa-solid fa-cart-arrow-down mr-2"></i>
         GIỎ HÀNG
       </div>
-      <div className="border-[1px] border-solid bg-[#fffef4] border-[#fbe104] p-2 rounded-md my-4 bg-[white] w-full">
+      <div className="border-[1px] border-solid bg-[#fffef4] border-[#fbe104] p-2 rounded-md my-4 w-full">
         Nhớ nhấn vào mã giảm giá bên dưới để nhận thêm khuyến mãi nhé!
       </div>
       <div className="bg-[white] p-8 w-full rounded-md mb-4">

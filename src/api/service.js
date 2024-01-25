@@ -188,6 +188,14 @@ export const requests = {
     });
   },
 
+  getAllReview: () => {
+    return axios.get(`${URL}/v2/reviews`, {
+      validateStatus: function (status) {
+        return status < 500;
+      }
+    });
+  },
+
   updateReview: (value, token) => {
     return axios.put(
       `${URL}/v2/review`,
@@ -201,5 +209,5 @@ export const requests = {
         },
       }
     );
-  }
+  },
 };
