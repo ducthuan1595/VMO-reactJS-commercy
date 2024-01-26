@@ -1,19 +1,49 @@
-import { useEffect, useState } from "react";
-import { getReviews } from "../../actions/getReviews"
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { getReviewFollowItem } from "../../actions/getReviews"
 
 import Star from '../Star';
 import Reviewer from '../Reviewer';
+import Navigation from "../Navigation";
+import { getPercentStar } from "../../util/getPercent";
 
-const Review = () => {
+const Review = ({itemId}) => {
   const [reviews, setReview] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+
+  const totalRef = useRef(null);
 
   useEffect(() => {
-    const fetchReview = async () => {
-      const res = await getReviews();
-      setReview(res);
-    };
-    fetchReview();
-  }, []);
+    if(itemId) {
+      const fetchReview = async () => {
+        let limit = 5;
+        const res = await getReviewFollowItem(itemId, page, limit);
+        console.log(res);
+        setReview(res.data);
+        setTotalPage(res.totalPage);
+      };
+      fetchReview();
+    }
+  }, [page, itemId]);
+
+  useEffect(() => {
+    if(totalRef.current) {
+      const percent = getPercentStar(reviews);
+      const point = percent / 100 * 5;
+      totalRef.current.innerHTML = point.toFixed(1);
+    }
+  }, [totalRef, reviews])
+
+  if(reviews.length < 1) {
+    return (
+      <div className="bg-white rounded px-4 py-6">
+        <h1 className="text-2xl font-medium">Đánh giá sản phẩm</h1>
+        <div className="text-center py-5">Chưa có đánh giá</div>
+      </div>
+    );
+  }
+
   
   return (
     <div className="bg-white rounded px-4 py-6">
@@ -42,15 +72,16 @@ const Review = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Star isBig={true} />
-          <span className="text-3xl text-red-500">5.0</span>
+          <Star isBig={true} reviewItems={reviews} />
+          <span className="text-3xl text-red-500" ref={totalRef} >5.0</span>
         </div>
       </div>
       <div>
-        {reviews.map(review => (
+        {reviews.map((review) => (
           <Reviewer review={review} key={review._id} />
         ))}
       </div>
+      <Navigation totalPage={totalPage} setPage={setPage} />
     </div>
   );
 };

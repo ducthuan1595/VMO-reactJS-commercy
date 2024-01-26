@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { requests } from "../../api/service";
 import Item from "../Item";
+import { getReviews } from "../../actions/getReviews";
 
 export default function ListItem({ fetchItem, pageItem, limit }) {
   const [items, setItems] = useState([]);
@@ -15,10 +16,8 @@ export default function ListItem({ fetchItem, pageItem, limit }) {
 
    useEffect(() => {
      const fetchReview = async () => {
-       const res = await requests.getAllReview();
-       if (res.data.message === "ok") {
-         setReviews(res.data.data);
-       }
+       const res = await getReviews()
+        setReviews(res);
      };
      fetchReview();
    }, []);

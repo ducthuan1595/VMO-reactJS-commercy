@@ -1,7 +1,12 @@
 import React from "react";
+import {useNavigate} from 'react-router-dom';
+
 import News from "./News";
 
 export default function Footer() {
+
+  const navigate = useNavigate();
+
   return (
     <div className="w-full md:px-5 lg:w-[1200px] mx-auto bg-[white] pb-16 rounded-t-xl">
       <News />
@@ -75,7 +80,10 @@ export default function Footer() {
             </ul>
             <ul className="list-none flex flex-col gap-4 px-4">
               <li className="text-[22px] font-semibold">TÀI KHOẢN</li>
-              <li className="hover:text-primary-color hover:translate-x-1 cursor-pointer">
+              <li
+                className="hover:text-primary-color hover:translate-x-1 cursor-pointer"
+                onClick={() => navigate('/login')}
+              >
                 Đăng nhập/Tạo mới tài khoản
               </li>
               <li className="hover:text-primary-color hover:translate-x-1 cursor-pointer">

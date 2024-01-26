@@ -11,6 +11,7 @@ import "swiper/css/free-mode";
 import "swiper/css/pagination";
 
 import CountDown from "../../util/CountDown";
+import { getReviews } from "../../actions/getReviews";
 
 export default function FlashSale() {
   const [itemSale, setItemSale] = useState(null);
@@ -30,10 +31,8 @@ export default function FlashSale() {
 
   useEffect(() => {
     const fetchReview = async () => {
-      const res = await requests.getAllReview();
-      if (res.data.message === "ok") {
-        setReviews(res.data.data);
-      }
+      const res = await getReviews();
+      setReviews(res);
     };
     fetchReview();
   }, [])

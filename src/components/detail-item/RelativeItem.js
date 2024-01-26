@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Item from "../Item";
 
 import { requests } from "../../api/service";
+import {getReviews} from '../../actions/getReviews'
 
 export default function RelativeItem({ detailItem }) {
   const [item, setItem] = useState([]);
@@ -41,10 +42,8 @@ export default function RelativeItem({ detailItem }) {
 
    useEffect(() => {
      const fetchReview = async () => {
-       const res = await requests.getAllReview();
-       if (res.data.message === "ok") {
-         setReviews(res.data.data);
-       }
+       const res = await getReviews();
+        setReviews(res);
      };
      fetchReview();
    }, []);

@@ -214,13 +214,13 @@ export default function DetailInfor({ detailItem, reviews }) {
           <div className="flex items-center gap-4 font-semibold">
             <div
               onClick={handleAddCart}
-              className="border-[1px] border-solid border-primary-color px-4 py-3 text-primary-color rounded-xl cursor-pointer active:opacity-70"
+              className="border-[1px] border-solid border-primary-color px-4 py-3 text-primary-color rounded-xl cursor-pointer active:opacity-70 hover:bg-yellow-100 hover:border-yellow-100"
             >
               <i className="fa-solid fa-cart-plus mr-2"></i>
               <span>Thêm vào giỏ hàng</span>
             </div>
             <button
-              className="bg-primary-color px-4 py-3 rounded-xl text-[white]"
+              className="bg-primary-color px-4 py-3 rounded-xl text-[white] t-box-shadow"
               onClick={handlePay}
             >
               Mua ngay

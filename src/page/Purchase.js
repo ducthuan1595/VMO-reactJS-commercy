@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import MainLayout from "../layout/Main";
-import Profile from "../components/body/Profile";
+import Profile from "../components/account/Profile";
 import OrderItem from "../components/body/OrderItem";
 import { requests } from "../api/service";
 
@@ -10,6 +10,7 @@ export default function Purchase() {
   const [orders, setOrders] = useState([]);
   const [results, setResult] = useState(null);
   const token = useSelector((state) => state.auth.token);
+  const currUser = useSelector((state) => state.auth.userCurr);
 
   const fetchOrder = async (page) => {
     if (token) {
@@ -33,7 +34,7 @@ export default function Purchase() {
   return (
     <MainLayout>
       <div className="w-full flex gap-8 pb-16 rounded-t-xl">
-        <Profile />
+        <Profile imageUrl={currUser?.picture?.url} accountName={currUser?.accountName ?? currUser.username} />
         <OrderItem orders={orders} results={results} fetchOrder={fetchOrder} />
       </div>
     </MainLayout>

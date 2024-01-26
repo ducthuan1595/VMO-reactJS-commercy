@@ -3,7 +3,6 @@ import { formatTimer } from '../util/getTimer';
 
 const Reviewer = ({review}) => {
 
-  console.log(review.picture[0]);
   return (
     <div className="flex flex-col gap-2 px-5 border-b-[1px] py-4 text-left border-stone-200">
       <div className="flex flex-col items-start">

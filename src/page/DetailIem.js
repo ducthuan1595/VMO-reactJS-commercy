@@ -24,7 +24,7 @@ export default function DetailIem() {
       setDetailItem(location.state.detailItem);
     }
   }, [location]);
-  // console.log(detailItem, reviews);
+  // console.log(detailItem);
 
   return (
     <MainLayout>
@@ -33,7 +33,7 @@ export default function DetailIem() {
         <Promo />
         <InforItem detailItem={detailItem} />
         <RelativeItem detailItem={detailItem} />
-        <Review />
+        <Review itemId={detailItem?._id} />
       </div>
     </MainLayout>
   );

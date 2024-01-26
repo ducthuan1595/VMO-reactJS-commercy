@@ -26,7 +26,6 @@ const Home = () => {
       null
     );
 
-    console.log(res.data);
     if (res.data.message === "ok") {
       setPageItem(res.data.data);
     }

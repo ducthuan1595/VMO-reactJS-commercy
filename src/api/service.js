@@ -28,6 +28,17 @@ export const requests = {
     );
   },
 
+  credential: (origin, value) => {
+    return axios.get(
+      `${URL}/v2/credential?origin=${origin}&token=${value}`,
+      {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+      }
+    );
+  },
+
   forgotPassword: (value) => {
     return axios.post(
       `${URL}/forgot-password`,
@@ -53,6 +64,20 @@ export const requests = {
         },
       }
     );
+  },
+
+  updateAvatar: (picture, token) => {
+    return axios.put(`${URL}/v2/avatar`,
+      picture,
+      {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
   },
 
   // Voucher
@@ -188,8 +213,16 @@ export const requests = {
     });
   },
 
-  getAllReview: () => {
-    return axios.get(`${URL}/v2/reviews`, {
+  getReviewFollowItem: (itemId, page, limit) => {
+    return axios.get(`${URL}/v2/reviews-with-item?itemId=${itemId}&page=${page}&limit=${limit}`, {
+      validateStatus: function (status) {
+        return status < 500;
+      },
+    });
+  },
+
+  getAllReview: (page, limit) => {
+    return axios.get(`${URL}/v2/reviews?page=${page}&limit=${limit}`, {
       validateStatus: function (status) {
         return status < 500;
       }

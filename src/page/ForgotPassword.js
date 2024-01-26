@@ -25,8 +25,8 @@ const ForgotPassword = () => {
     }
   };
   return (
-    <div className="h-full mt-[150px] flex justify-center items-center">
-      <div className="bg-[yellow] w-[480px] p-8 rounded-md">
+    <div className="h-screen flex justify-center items-center">
+      <div className="h-4/5 bg-[yellow] w-[480px] p-8 rounded-md">
         <div className="align-center">
           <img
             src="/logo/book_logo.png"
@@ -37,7 +37,7 @@ const ForgotPassword = () => {
         <div>
           <h2 className="text-center text-[28px] my-4">Forgot Password</h2>
           <p className="text-[#333] text-center mb-2">
-            No problem! Enter your email below and We wil send you an email with
+            No problem! Enter your email below and We'll send you an email with
             instruction to reset your password.
           </p>
         </div>

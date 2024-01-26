@@ -118,13 +118,14 @@ const ReviewModal = ({ item, setIsPopup, isEdit }) => {
           />
         </div>
         <div>
-          <input
+          <textarea
             type="text"
             placeholder="Viết đánh giá của bạn"
             className="w-full border-none outline-none ml-2"
             onChange={(e) => setComment(e.target.value)}
             value={comment}
-          />
+            rows={4}
+          ></textarea>
         </div>
         <div className="mt-8 text-right">
           <button

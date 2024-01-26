@@ -1,14 +1,59 @@
-import React from "react";
+import {useState} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import {useNavigate} from 'react-router-dom';
+
+import { requests } from "../api/service";
+import { login } from "../store/userSlice";
 import MainLayout from "../layout/Main";
-import Profile from "../components/body/Profile";
-import DetailProfile from "../components/body/DetailProfile";
+import Profile from "../components/account/Profile";
+import DetailProfile from "../components/account/DetailProfile";
+import handleToast from "../util/toast";
 
 export default function Account() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const token = useSelector((state) => state.auth.token);
+  const user = useSelector((state) => state.auth.userCurr);
+
+  if (!user || !token) {
+    navigate("/login");
+  }
+  
+  
+  const [inputValue, setInputValue] = useState({
+    accountName: user?.accountName ?? user.username,
+    fullname: user.username ? user.username : "",
+    phone: user.phoneNumber ? user.phoneNumber : "",
+    email: user.email ?? "",
+    gender: user.gender ? user.gender : "",
+    address: user.address ?? "",
+  });
+
+  const onSave = async () => {
+    if (token) {
+      const res = await requests.updateUser(inputValue, token);
+      if (res.data.message === "ok") {
+        dispatch(login(res.data));
+        handleToast(toast.success, "Lưu thành công!");
+      } else {
+        handleToast(toast.warn, "Kiểm tra lại nhé");
+      }
+    }
+  };
+
   return (
     <MainLayout>
       <div className="w-full flex gap-8 pb-16 rounded-t-xl">
-        <Profile />
-        <DetailProfile />
+        <Profile
+          imageUrl={user?.picture?.url}
+          accountName={inputValue?.accountName}
+        />
+        <DetailProfile
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          onSave={onSave}
+        />
       </div>
     </MainLayout>
   );

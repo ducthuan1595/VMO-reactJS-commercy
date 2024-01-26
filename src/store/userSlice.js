@@ -12,7 +12,6 @@ const userSlice = createSlice({
   },
   reducers: {
     login: (state, action) => {
-      console.log("payload", action.payload);
       localStorage.setItem("book-user", JSON.stringify(action.payload.data));
       localStorage.setItem("book-token", JSON.stringify(action.payload.token));
       state.userCurr = action.payload.data;

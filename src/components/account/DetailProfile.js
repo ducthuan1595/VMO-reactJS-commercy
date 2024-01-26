@@ -1,40 +1,8 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-
-import { login } from "../../store/userSlice";
-import { requests } from "../../api/service";
-import handleToast from "../../util/toast";
-
-export default function DetailProfile() {
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
-  const user = useSelector((state) => state.auth.userCurr);
-
-  const [inputValue, setInputValue] = useState({
-    accountName: user.accountName ? user.accountName : "Account",
-    fullname: user.username ? user.username : "",
-    phone: user.phoneNumber ? user.phoneNumber : "",
-    email: user.email ? user.email : "example@gmail.com",
-    gender: user.gender ? user.gender : "",
-  });
-
+export default function DetailProfile({ inputValue, setInputValue, onSave }) {
   const handleChangeInput = (e, name) => {
     const cpState = { ...inputValue };
     cpState[name] = e.target.value;
     setInputValue(cpState);
-  };
-
-  const handleUpdateUser = async () => {
-    if (token) {
-      const res = await requests.updateUser(inputValue, token);
-      if (res.data.message === "ok") {
-        dispatch(login(res.data));
-        handleToast(toast.success, "Lưu thành công!");
-      } else {
-        handleToast(toast.warn, "Kiểm tra lại nhé");
-      }
-    }
   };
 
   const handleCheckGender = (e) => {
@@ -45,7 +13,6 @@ export default function DetailProfile() {
     }
   };
 
-  console.log({ user, inputValue });
   return (
     <div className="bg-white w-full pt-6 pb-32">
       <div className="mx-auto w-[65%]">
@@ -56,6 +23,7 @@ export default function DetailProfile() {
             <span>Tên</span>
             <span>Email</span>
             <span>Số điện thoại</span>
+            <span>Địa chỉ</span>
             <span>Giới tính</span>
           </div>
           <div className="flex flex-col gap-3">
@@ -64,7 +32,7 @@ export default function DetailProfile() {
               placeholder="Tìm gì Thế"
               className="p-2 bg-border-color w-[400px]"
               onChange={(e) => handleChangeInput(e, "accountName")}
-              value={inputValue.accountName}
+              value={inputValue?.accountName}
             />
             <input
               type="text"
@@ -87,6 +55,15 @@ export default function DetailProfile() {
               value={inputValue.phone}
               className="p-2 bg-border-color"
             />
+            <div className="flex items-center gap-1">
+              <input
+                type="text"
+                onChange={(e) => handleChangeInput(e, "address")}
+                value={inputValue.address}
+                className="p-2 bg-border-color flex-1"
+              />
+              {/* <button className="py-2 px-2 text-white bg-blue-400 rounded">Thêm</button> */}
+            </div>
             <div
               className="flex items-center gap-6 mt-2"
               onClick={handleCheckGender}
@@ -126,7 +103,7 @@ export default function DetailProfile() {
         </div>
         <button
           className="p-2 bg-primary-color text-white rounded-sm my-5"
-          onClick={handleUpdateUser}
+          onClick={onSave}
         >
           Thay đổi
         </button>
