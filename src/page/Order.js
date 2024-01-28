@@ -3,12 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import MainLayout from "../layout/Main";
 import PayOrder from "../components/body/PayOrder";
-import { URL } from "../api/service";
 import { requests } from "../api/service";
 import { addCart } from "../store/userSlice";
 
 export default function Order() {
-  const token = useSelector((state) => state.auth.token);
   const currUser = useSelector((state) => state.auth.userCurr);
   const dispatch = useDispatch();
 
@@ -38,15 +36,15 @@ export default function Order() {
   };
 
   const handleAddCart = async (id, quantity) => {
-    if (currUser && token) {
+    if (currUser) {
       try {
         const value = {
           quantity,
           itemId: id,
         };
-        const res = await requests.addCart(value, token);
-        if (res.data.message === "ok") {
-          dispatch(addCart(res.data.data));
+        const res = await requests.addCart(value);
+        if (res.message === "ok") {
+          dispatch(addCart(res.data));
         }
         return true;
       } catch (err) {
@@ -56,12 +54,12 @@ export default function Order() {
   };
 
   const handleDeleteCart = async (id) => {
-    if (token) {
+    if (currUser) {
       const isConfirm = window.confirm("Muốn xóa thật không?");
       if (isConfirm) {
-        const res = await requests.deleteCart({ cartId: id }, token);
-        if (res.data.message === "ok") {
-          dispatch(addCart(res.data.data));
+        const res = await requests.deleteCart({ cartId: id });
+        if (res.message === "ok") {
+          dispatch(addCart(res.data));
         }
       }
     }

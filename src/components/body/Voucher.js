@@ -9,7 +9,6 @@ import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
 import { requests } from "../../api/service";
-import { URL } from "../../api/service";
 import { getVoucher } from "../../store/voucherSlice";
 
 export default function Voucher() {
@@ -19,9 +18,9 @@ export default function Voucher() {
 
   const fetchVoucher = async () => {
     const res = await requests.getVoucher(null, null);
-    if (res.data.message === "ok") {
-      dispatch(getVoucher(res.data.data));
-      const activeVoucher = res.data.data.filter(
+    if (res.message === "ok") {
+      dispatch(getVoucher(res.data));
+      const activeVoucher = res.data.filter(
         (v) => v.expirationDate > Date.now()
       );
       setVoucher(activeVoucher);

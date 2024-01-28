@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -8,15 +8,9 @@ import { requests } from "../../api/service";
 
 
 export default function Profile({ imageUrl, accountName }) {
-  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [photo, setPhoto] = useState(imageUrl ?? null);
-
-  if (!token) {
-    navigate("/login");
-  }
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
@@ -27,7 +21,7 @@ export default function Profile({ imageUrl, accountName }) {
     };
     setPhoto(picture.url);
     if(picture) {
-      const response = await requests.updateAvatar(picture, token);
+      const response = await requests.updateAvatar(picture);
       if(response.data.message === 'ok') {
         console.log(response.data);
         dispatch(login(response.data));
@@ -38,7 +32,7 @@ export default function Profile({ imageUrl, accountName }) {
   return (
     <div className="bg-white w-[35%] px-5 pt-3 pb-48 rounded-md">
       <div className="flex items-center mb-4">
-        <div className="relative w-[80px] h-[80px] rounded-full">
+        <div className="relative w-[100px] h-[100px] rounded-full">
           <img
             src={photo ?? "/images/user.jpg"}
             alt="user"
@@ -53,7 +47,7 @@ export default function Profile({ imageUrl, accountName }) {
             />
           </div>
         </div>
-        <h3 className="font-semibold text-[19px] ml-3">{accountName}</h3>
+        <h3 className="font-semibold text-[19px] ml-3 flex-1">{accountName}</h3>
       </div>
       <div>
         <ul className="flex flex-col gap-3">

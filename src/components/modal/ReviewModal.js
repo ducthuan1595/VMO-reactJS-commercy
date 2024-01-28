@@ -9,7 +9,6 @@ import handleToast from '../../util/toast';
 import UploadImage from '../inputs/UploadImage';
 
 const ReviewModal = ({ item, setIsPopup, isEdit }) => {
-  const token = useSelector((state) => state.auth.token);
   const currUser = useSelector((state) => state.auth.userCurr);
   const navigate = useNavigate();
 
@@ -32,7 +31,7 @@ const ReviewModal = ({ item, setIsPopup, isEdit }) => {
   }
 
   const handleSend = async () => {
-    if (!token || !comment) {
+    if (!comment) {
       handleToast(toast.warning, 'Không được bỏ trống bình luận')
       return;
     }
@@ -48,8 +47,8 @@ const ReviewModal = ({ item, setIsPopup, isEdit }) => {
           picture: urlImage,
           reviewId: isEdit._id
         };
-        const res = await requests.updateReview(value, token);
-        if (res.data.message === "ok") {
+        const res = await requests.updateReview(value);
+        if (res.message === "ok") {
           handleToast(toast.success, "Đã thay đổi đánh giá");
           window.scrollTo(0, 0);
           setIsPopup(false);
@@ -61,8 +60,8 @@ const ReviewModal = ({ item, setIsPopup, isEdit }) => {
           stars,
           picture: urlImage,
         };
-        const res = await requests.createReview(value, token);
-        if (res.data.message === "ok") {
+        const res = await requests.createReview(value);
+        if (res.message === "ok") {
           handleToast(toast.success, "Đã đánh giá sản phẩm");
           window.scrollTo(0,0);
           setIsPopup(false);

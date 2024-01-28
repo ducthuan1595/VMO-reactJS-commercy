@@ -42,9 +42,9 @@ const Header = () => {
           null,
           null
         );
-        if (res.data.message === "ok") {
-          setItemSearch(res.data.data);
-          setOpenSearch(!openSearch);
+        if (res.message === "ok") {
+          setItemSearch(res.data);
+          setOpenSearch(true);
         }
       } catch (err) {
         console.error(err);
@@ -155,7 +155,7 @@ const Header = () => {
       </div>
       <div className="max-w-[1200px] m-auto flex justify-between items-center">
         <div className="cursor-pointer" onClick={() => navigate("/")}>
-          <img src="/logo/book_logo.png" className="h-20" alt="logo" />
+          <img src="/logo/book_logo.png" className="h-20 rounded-xl" alt="logo" />
         </div>
         <div className="w-[100px] md:w-[400px] lg:w-[800px] relative h-12 leading-8 flex justify-between items-center bg-[white] p-2 rounded-md">
           <input
@@ -163,7 +163,10 @@ const Header = () => {
             type="text"
             className="flex-1 mr-2 text-[#333] outline-none pl-3"
             placeholder="Tìm book & author"
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setOpenSearch(false)
+            }}
             onKeyDown={(e) => handleSearchWithEnter(e)}
             value={search}
           />
@@ -197,7 +200,12 @@ const Header = () => {
         </div>
         <div
           className="text-3xl cursor-pointer relative shake-bottom "
-          onClick={() => navigate("/order")}
+          onClick={() => {
+            if(!currUser) {
+              return navigate('/login');
+            }
+            navigate("/order");
+          }}
         >
           <i className="fa-solid fa-cart-shopping mr-[5px]"></i>
           {quantity && quantity > 0 && (

@@ -13,10 +13,9 @@ import handleToast from "../util/toast";
 export default function Account() {
   const dispatch = useDispatch();
   const navigate = useNavigate()
-  const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.userCurr);
 
-  if (!user || !token) {
+  if (!user) {
     navigate("/login");
   }
   
@@ -31,15 +30,13 @@ export default function Account() {
   });
 
   const onSave = async () => {
-    if (token) {
-      const res = await requests.updateUser(inputValue, token);
-      if (res.data.message === "ok") {
-        dispatch(login(res.data));
+      const res = await requests.updateUser(inputValue);
+      if (res.message === "ok") {
+        dispatch(login(res));
         handleToast(toast.success, "Lưu thành công!");
       } else {
         handleToast(toast.warn, "Kiểm tra lại nhé");
       }
-    }
   };
 
   return (

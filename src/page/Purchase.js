@@ -9,21 +9,20 @@ import { requests } from "../api/service";
 export default function Purchase() {
   const [orders, setOrders] = useState([]);
   const [results, setResult] = useState(null);
-  const token = useSelector((state) => state.auth.token);
   const currUser = useSelector((state) => state.auth.userCurr);
 
   const fetchOrder = async (page) => {
-    if (token) {
+    if (currUser) {
       const value = {
         limit: 5,
         page,
         type: null,
         column: null,
       };
-      const res = await requests.getOrder(value, token);
-      if (res.data.message === "ok") {
-        setResult(res.data.data);
-        setOrders((state) => [...state, ...res.data.data.orders]);
+      const res = await requests.getOrder(value);
+      if (res.message === "ok") {
+        setResult(res.data);
+        setOrders((state) => [...state, ...res.data.orders]);
       }
     }
   };

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { requests } from "../../api/service";
 import Item from "../Item";
 import { getReviews } from "../../actions/getReviews";
 

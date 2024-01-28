@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {useSelector} from 'react-redux'
+import {useNavigate} from 'react-router-dom';
 
-import { URL, requests } from "../../api/service";
 import { formatTimer } from "../../util/getTimer";
 import ReviewModal from "../modal/ReviewModal";
 import Modal from "../modal/Modal";
+import { getReviewByUser } from "../../actions/getReviews";
+import { requests } from "../../api/service";
 
 export default function OrderItem({ orders, results, fetchOrder }) {
-  const token = useSelector((state) => state.auth.token);
   const [isPopup, setIsPopup] = useState(false);
   const [item, setItem] = useState();
   const [reviews, setReviews] = useState([]);
   const [isEdit, setIsEdit] = useState();
+
+  const navigate = useNavigate();
 
   const handleAddItem = () => {
     const page = ++results.currPage;
@@ -22,13 +24,39 @@ export default function OrderItem({ orders, results, fetchOrder }) {
 
   useEffect(() => {
     const fetchReview = async() => {
-      const res = await requests.getReview(token);
-      if(res.data.message === 'ok') {
-        setReviews(res.data.data);
-      }
+      const res = await getReviewByUser();
+      setReviews(res);
     }
     fetchReview();
-  }, [token, isPopup]);
+  }, [isPopup]);
+
+  const showDetail = async (id) => {
+    if (id) {
+      const res = await requests.getItem(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        id,
+        null
+      );
+      if (res.message === "ok") {
+        if (item?.length) {
+          setItem([]);
+        }
+        navigate(`/detail-item/${id}`, {
+          state: {
+            detailItem: res.data,
+            reviews,
+          },
+        });
+        window.scrollTo(0, 0);
+      }
+    }
+  };
 
   const handleReview = (item, isEdit) => {
     setItem(item);
@@ -44,7 +72,6 @@ export default function OrderItem({ orders, results, fetchOrder }) {
     );
   }
 
-
   return (
     <div className="w-full rounded-md">
       <table className="w-full">
@@ -57,7 +84,7 @@ export default function OrderItem({ orders, results, fetchOrder }) {
           </tr>
         </thead>
         <tbody className="">
-          {orders &&
+          {orders.length ? (
             orders.map((i) => {
               const status = {
                 D0: "Đang giao",
@@ -100,7 +127,11 @@ export default function OrderItem({ orders, results, fetchOrder }) {
                     <td className="w-[240px] text-start">
                       {i.items.map((item) => {
                         return (
-                          <div key={item._id} className="flex w-[400px]">
+                          <div
+                            key={item._id}
+                            className="flex w-[400px] cursor-pointer"
+                            onClick={() => showDetail(item.itemId._id)}
+                          >
                             <img
                               src={item.itemId.pic[0].url}
                               alt={item.itemId.name}
@@ -156,10 +187,23 @@ export default function OrderItem({ orders, results, fetchOrder }) {
                       })}
                     </td>
                   </tr>
-                  
+                  <tr>
+                    <td colSpan={4}>
+                      <div className="w-full p-4 bg-white text-[11px] font-light">
+                        🎁Voucher {i.voucherId ? "✔" : "❌"}
+                      </div>
+                    </td>
+                  </tr>
                 </React.Fragment>
               );
-            })}
+            })
+          ) : (
+            <tr>
+              <td colSpan={4}>
+                <div className="text-center mt-4">Hãy chọn mua sản phẩm.</div>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
       {results?.currPage == results?.totalPage ? (

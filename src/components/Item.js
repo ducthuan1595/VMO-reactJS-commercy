@@ -32,13 +32,13 @@ export default function Item({
         id,
         null
       );
-      if (res.data.message === "ok") {
+      if (res.message === "ok") {
         if (item?.length) {
           setItem([]);
         }
         navigate(`/detail-item/${id}`, {
           state: {
-            detailItem: res.data.data,
+            detailItem: res.data,
             reviews: reviewItems ? reviewItems : [],
           },
         });
@@ -78,7 +78,7 @@ export default function Item({
         {priceOrigin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ
       </div>
       <div className="flex items-center text-[12px] text-left ">
-        <Star reviewItems={reviewItems} />
+        <Star reviews={reviewItems} />
         <span className="text-[#f6a500]">
           ({reviewItems ? reviewItems.length : 0})
         </span>

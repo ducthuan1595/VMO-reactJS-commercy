@@ -21,6 +21,8 @@ const Navigation = ({totalPage, setPage}) => {
         activeClassName="bg-[#20B2AA] text-white"
         className="flex items-center justify-center py-5 gap-4"
         pageClassName="py-1 px-3 rounded hover:bg-[#20B2AA] hover:text-[#fff]"
+        forcePage={totalPage <= 1 ? 0 : undefined}
+        disableInitialCallback={totalPage <= 1}
       />
     </>
   );

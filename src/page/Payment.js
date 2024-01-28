@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { URL } from "../api/service";
 import { requests } from "../api/service";
 import MainLayout from "../layout/Main";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,7 +14,6 @@ export default function Payment() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cart = useSelector((state) => state.auth.userCurr);
-  const token = useSelector((state) => state.auth.token);
   const codeVoucher = useSelector((state) => state.voucher.codeVoucher);
 
   const [cartItem, setCartItem] = useState(null);
@@ -50,15 +48,15 @@ export default function Payment() {
   }, [cartItem, codeVoucher]);
 
   const handleCheckout = async () => {
-    if (token) {
+    if (cart) {
       const value = cartItem.map((i) => i._id);
       const values = {
         arrCartId: value,
         voucherCode: codeVoucher && codeVoucher[0].code,
       };
-      const res = await requests.payOrder(values, token);
-      if (res.data.message === "ok") {
-        dispatch(addCart(res.data.data.updateUser));
+      const res = await requests.payOrder(values);
+      if (res.message === "ok") {
+        dispatch(addCart(res.data.updateUser));
         dispatch(getCodeVoucher(null));
         navigate("/");
         window.scrollTo(0, 0);

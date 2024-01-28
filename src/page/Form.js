@@ -2,11 +2,9 @@ import { useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useGoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 
 import { requests } from "../api/service";
 import { login } from "../store/userSlice";
-import { getInfoGoogle } from "../api/getInfoGoogle";
 
 const Form = () => {
   const navigate = useNavigate();
@@ -18,7 +16,6 @@ const Form = () => {
   const [password, setPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [errMessage, setErrMessage] = useState("");
-  const [credential, setCredential] = useState(null);
 
   const handleLogin = async () => {
     if (location.pathname === "/register") {
@@ -31,13 +28,14 @@ const Form = () => {
           email,
           password,
         });
-        if (res.data.message === "ok") {
+        console.log(res);
+        if (res.message === "ok") {
           navigate("/login");
           setEmail("");
           setPassword("");
           setName("");
         } else {
-          setErrMessage(res.data.message);
+          setErrMessage(res.message);
         }
       }
     } else {
@@ -46,11 +44,11 @@ const Form = () => {
       } else {
         setErrMessage("");
         const res = await requests.login({ email, password });
-        if (res.data.message === "ok") {
-          dispatch(login(res.data));
+        if (res.message === "ok") {
+          dispatch(login(res));
           navigate("/");
         } else {
-          setErrMessage(res.data.message);
+          setErrMessage(res.message);
         }
       }
     }
@@ -65,9 +63,8 @@ const Form = () => {
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
       const res = await requests.credential('google', credentialResponse.access_token)
-      console.log(res.data);
-      if(res.data.message === 'ok') {
-        dispatch(login(res.data));
+      if(res.message === 'ok') {
+        dispatch(login(res));
         navigate("/");
       }
     },

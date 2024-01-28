@@ -20,8 +20,8 @@ export default function FlashSale() {
 
   const fetchItem = async () => {
     const res = await requests.getItemFlashSale();
-    if (res.data.message === "ok") {
-      setItemSale(res.data.data);
+    if (res.message === "ok") {
+      setItemSale(res.data);
     }
   };
 

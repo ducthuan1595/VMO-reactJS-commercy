@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { URL, requests } from "../../api/service";
+import { requests } from "../../api/service";
 import { useNavigate } from "react-router-dom";
 
 export default function Category() {
@@ -8,8 +8,8 @@ export default function Category() {
 
   const fetchCategory = async () => {
     const res = await requests.getCategory();
-    if (res.data.message === "ok") {
-      setCategories(res.data.data);
+    if (res.message === "ok") {
+      setCategories(res.data);
     }
   };
 
@@ -17,27 +17,6 @@ export default function Category() {
     fetchCategory();
   }, []);
 
-  // const handleDetailCategory = async (name) => {
-  //   try {
-  //     const filter = name;
-  //     const res = await requests.getItem(
-  //       filter,
-  //       null,
-  //       null,
-  //       null,
-  //       null,
-  //       null,
-  //       null,
-  //       null,
-  //       null
-  //     );
-  //     if (res.data.message === "ok") {
-  //       window.scrollTo(0, 0);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
   return (
     <div className="bg-[white] rounded-sm">

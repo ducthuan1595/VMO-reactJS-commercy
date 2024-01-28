@@ -24,9 +24,8 @@ export default function RelativeItem({ detailItem }) {
         null
       );
 
-      if (res.data.message === "ok") {
-        // setItem(res.data.data);
-        setPageItem(res.data.data);
+      if (res.message === "ok") {
+        setPageItem(res.data);
       }
     }
   };

@@ -1,92 +1,49 @@
-import axios from "axios";
-
-const API_URl = process.env.REACT_APP_API_URL;
-export const URL = API_URl + "/api";
+import axios from "../config/axiosInstance";
 
 export const requests = {
   register: (value) => {
     return axios.post(
-      `${URL}/signup`,
-      { ...value },
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-      }
+      `/signup`,
+      { ...value }
     );
   },
 
   login: (value) => {
     return axios.post(
-      `${URL}/login`,
-      { ...value },
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-      }
+      `/login`,
+      { ...value }
     );
   },
 
   credential: (origin, value) => {
     return axios.get(
-      `${URL}/v2/credential?origin=${origin}&token=${value}`,
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-      }
+      `/v2/credential?origin=${origin}&token=${value}`
     );
   },
 
   forgotPassword: (value) => {
     return axios.post(
-      `${URL}/forgot-password`,
-      { ...value },
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-      }
+      `/forgot-password`,
+      { ...value }
     );
   },
 
-  updateUser: (value, token) => {
+  updateUser: (value) => {
     return axios.post(
-      `${URL}/update-user`,
+      `/update-user`,
       { ...value },
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
     );
   },
 
-  updateAvatar: (picture, token) => {
-    return axios.put(`${URL}/v2/avatar`,
+  updateAvatar: (picture) => {
+    return axios.put(`/v2/avatar`,
       picture,
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
     )
   },
 
   // Voucher
-  getVoucher: (page, limit, token) => {
-    return axios.get(`${URL}/get-voucher?page=${page}&limit=${limit}`, {
-      validateStatus: function (status) {
-        return status < 500;
-      },
-    });
+  getVoucher: (page, limit) => {
+    return axios.get(`/get-voucher?page=${page}&limit=${limit}`);
   },
 
   // Item
@@ -99,148 +56,73 @@ export const requests = {
     type,
     column,
     itemId,
-    token
   ) => {
     return axios.get(
-      `${URL}/get-item?page=${page}&limit=${limit}&itemId=${itemId}&filter=${filter}&key=${searchItem}&sort=${sort}&type=${type}&column=${column}`,
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-      }
+      `/get-item?page=${page}&limit=${limit}&itemId=${itemId}&filter=${filter}&key=${searchItem}&sort=${sort}&type=${type}&column=${column}`
     );
   },
 
   getItemWithPrice: (low, hight, name) => {
     return axios.get(
-      `${URL}/get-item-follow-price?low=${low}&hight=${hight}&name=${name}`
+      `/get-item-follow-price?low=${low}&hight=${hight}&name=${name}`
     );
   },
 
   getItemFlashSale: () => {
-    return axios.get(`${URL}/get-item-flashsale`, {
-      validateStatus: function (status) {
-        return status < 500;
-      },
-    });
+    return axios.get(`/get-item-flashsale`);
   },
 
   // Category
   getCategory: () => {
-    return axios.get(`${URL}/get-all-category`, {
-      validateStatus: function (status) {
-        return status < 500;
-      },
-    });
+    return axios.get(`/get-all-category`);
   },
 
   // Cart
-  addCart: (value, token) => {
-    return axios.post(`${URL}/add-cart`, value, {
-      validateStatus: function (status) {
-        return status < 500;
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  addCart: (value) => {
+    return axios.post(`/add-cart`, value);
   },
-  deleteCart: (value, token) => {
-    return axios.post(`${URL}/delete-cart`, value, {
-      validateStatus: function (status) {
-        return status < 500;
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  deleteCart: (value) => {
+    return axios.post(`/delete-cart`, value);
   },
 
   // Order
-  payOrder: (value, token) => {
+  payOrder: (value) => {
     return axios.post(
-      `${URL}/create-order`,
+      `/create-order`,
       { ...value },
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
     );
   },
 
-  getOrder: (value, token) => {
+  getOrder: (value) => {
     return axios.get(
-      `${URL}/get-order?page=${value.page}&limit=${value.limit}&type=${value.type}&column=${value.column}`,
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      `/get-order?page=${value.page}&limit=${value.limit}&type=${value.type}&column=${value.column}`
     );
   },
 
   // Review
-  createReview: (value, token) => {
+  createReview: (value) => {
     return axios.post(
-      `${URL}/v2/review`,
-      { ...value },
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      `/v2/review`,
+      { ...value }
     );
   },
 
-  getReview: (token, itemId) => {
-    return axios.get(`${URL}/v2/review?itemId=${itemId}`, {
-      validateStatus: function (status) {
-        return status < 500;
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getReview: (itemId) => {
+    return axios.get(`/v2/review?itemId=${itemId}`);
   },
 
-  getReviewFollowItem: (itemId, page, limit) => {
-    return axios.get(`${URL}/v2/reviews-with-item?itemId=${itemId}&page=${page}&limit=${limit}`, {
-      validateStatus: function (status) {
-        return status < 500;
-      },
-    });
+  getReviewFollowItem: (itemId, rateStar, page, limit) => {
+    return axios.get(`/v2/reviews-with-item?itemId=${itemId}&page=${page}&limit=${limit}&rateStar=${rateStar}`);
   },
 
   getAllReview: (page, limit) => {
-    return axios.get(`${URL}/v2/reviews?page=${page}&limit=${limit}`, {
-      validateStatus: function (status) {
-        return status < 500;
-      }
-    });
+    return axios.get(`/v2/reviews?page=${page}&limit=${limit}`);
   },
 
-  updateReview: (value, token) => {
+  updateReview: (value) => {
     return axios.put(
-      `${URL}/v2/review`,
+      `/v2/review`,
       { ...value },
-      {
-        validateStatus: function (status) {
-          return status < 500;
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
     );
   },
 };

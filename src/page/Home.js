@@ -26,8 +26,8 @@ const Home = () => {
       null
     );
 
-    if (res.data.message === "ok") {
-      setPageItem(res.data.data);
+    if (res.message === "ok") {
+      setPageItem(res.data);
     }
   };
   useEffect(() => {

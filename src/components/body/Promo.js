@@ -9,7 +9,6 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
 
-import { URL } from "../../api/service";
 import { formatTimer } from "../../util/getTimer";
 import { getCodeVoucher } from "../../store/voucherSlice";
 

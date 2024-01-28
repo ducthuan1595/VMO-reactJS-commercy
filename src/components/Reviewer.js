@@ -6,7 +6,7 @@ const Reviewer = ({review}) => {
   return (
     <div className="flex flex-col gap-2 px-5 border-b-[1px] py-4 text-left border-stone-200">
       <div className="flex flex-col items-start">
-        <Avatar user={review.reviewer} isStar={true} />
+        <Avatar review={review} isStar={true} />
         <div className="text-neutral-500 text-xs mx-10">
           {formatTimer(review.createdAt, true, true)}
         </div>

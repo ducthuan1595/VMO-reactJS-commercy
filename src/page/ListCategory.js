@@ -22,8 +22,8 @@ export default function ListCategory() {
 
   const fetchCategory = async () => {
     const res = await requests.getCategory();
-    if (res.data.message === "ok") {
-      setCategories(res.data.data);
+    if (res.message === "ok") {
+      setCategories(res.data);
     }
   };
 
@@ -45,8 +45,8 @@ export default function ListCategory() {
         null,
         null
       );
-      if (res.data.message === "ok") {
-        setListItem(res.data.data);
+      if (res.message === "ok") {
+        setListItem(res.data);
         search.set("category", name);
         setSearch(search, { replace: true });
       }
@@ -77,8 +77,8 @@ export default function ListCategory() {
   const handleFilterPrice = async () => {
     if (priceHeight && priceLow) {
       const res = await requests.getItemWithPrice(priceLow, priceHeight, name);
-      if (res.data.message === "ok") {
-        setListItem(res.data.data);
+      if (res.message === "ok") {
+        setListItem(res.data);
       }
     } else {
       const listPrice = {
@@ -91,8 +91,8 @@ export default function ListCategory() {
         const hight = listPrice[checkPrice][1];
         const low = listPrice[checkPrice][0];
         const res = await requests.getItemWithPrice(low, hight, name);
-        if (res.data.message === "ok") {
-          setListItem(res.data.data);
+        if (res.message === "ok") {
+          setListItem(res.data);
         }
       }
     }

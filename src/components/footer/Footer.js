@@ -82,17 +82,29 @@ export default function Footer() {
               <li className="text-[22px] font-semibold">TÀI KHOẢN</li>
               <li
                 className="hover:text-primary-color hover:translate-x-1 cursor-pointer"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate("/login")}
               >
                 Đăng nhập/Tạo mới tài khoản
               </li>
               <li className="hover:text-primary-color hover:translate-x-1 cursor-pointer">
                 Thay đổi địa chỉ khách hàng
               </li>
-              <li className="hover:text-primary-color hover:translate-x-1 cursor-pointer">
+              <li
+                className="hover:text-primary-color hover:translate-x-1 cursor-pointer"
+                onClick={() => {
+                  navigate("/account");
+                  window.scrollTo(0, 0);
+                }}
+              >
                 Chi tiết tài khoản
               </li>
-              <li className="hover:text-primary-color hover:translate-x-1 cursor-pointer">
+              <li
+                className="hover:text-primary-color hover:translate-x-1 cursor-pointer"
+                onClick={() => {
+                  navigate("/purchase");
+                  window.scrollTo(0, 0);
+                }}
+              >
                 Lịch sử mua hàng
               </li>
             </ul>

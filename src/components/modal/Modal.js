@@ -2,7 +2,6 @@ import React from "react";
 
 export default function Modal({ setOpen, children }) {
   const closed = () => {
-    console.log(setOpen(false));
     setOpen(false);
   };
 

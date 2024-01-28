@@ -4,13 +4,11 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { addCart } from "../../store/userSlice";
 import { requests } from "../../api/service";
-import { URL } from "../../api/service";
 import Modal from "../modal/Modal";
 import Star from "../Star";
 
 export default function DetailInfor({ detailItem, reviews }) {
   const currUser = useSelector((state) => state.auth.userCurr);
-  const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -43,15 +41,15 @@ export default function DetailInfor({ detailItem, reviews }) {
   };
 
   const sendRequest = async () => {
-    if (currUser && token && detailItem) {
+    if (currUser && detailItem) {
       try {
         const value = {
           quantity,
           itemId: detailItem?._id,
         };
-        const res = await requests.addCart(value, token);
-        if (res.data.message === "ok") {
-          dispatch(addCart(res.data.data));
+        const res = await requests.addCart(value);
+        if (res.message === "ok") {
+          dispatch(addCart(res.data));
           return true;
         } else {
           return false;
@@ -137,7 +135,7 @@ export default function DetailInfor({ detailItem, reviews }) {
                 Ngôn ngữ: <strong>{detailItem?.language ?? 'Đang cập nhập'}</strong>
               </div>
               <div className="text-[#f6a500] text-left">
-                <Star reviewItems={reviews} isBig={true} />
+                <Star reviews={reviews} isBig={true} />
                 <span>({reviews ? reviews.length : 0} đánh giá)</span>
                 <span className="text-[#333] border-l-[1px] border-solid border-[#dbdbdb] ml-4 px-4">
                   Đã bán:{" "}

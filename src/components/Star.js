@@ -1,14 +1,18 @@
 import {useEffect, useRef} from 'react';
 import { getPercentStar } from '../util/getPercent';
 
-const Star = ({reviewItems, isBig}) => {
+const Star = ({reviews, review, isBig}) => {
   const divEl = useRef();
 
   useEffect(() => {
-    const reviews = reviewItems ?? [];
-    const percent = getPercentStar(reviews);
-    divEl.current.style.width = percent + "%";
-  }, [reviewItems]);
+    if(review) {
+      divEl.current.style.width = review.stars + "%";
+    }else if(reviews?.length) {
+      const reviewsArr = reviews ?? [];
+      const percent = getPercentStar(reviewsArr);
+      divEl.current.style.width = percent + "%";
+    }
+  }, [reviews, review]);
 
   return (
     <>

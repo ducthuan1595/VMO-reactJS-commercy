@@ -13,7 +13,7 @@ const ForgotPassword = () => {
     setMessage("");
     if (email) {
       const res = await requests.forgotPassword({ email });
-      if (res.data.message === "ok") {
+      if (res.message === "ok") {
         setMessage("Resend email");
       }
     }
@@ -26,7 +26,7 @@ const ForgotPassword = () => {
   };
   return (
     <div className="h-screen flex justify-center items-center">
-      <div className="h-4/5 bg-[yellow] w-[480px] p-8 rounded-md">
+      <div className="h-3/5 bg-[yellow] w-[480px] py-8 rounded-md">
         <div className="align-center">
           <img
             src="/logo/book_logo.png"
@@ -34,14 +34,14 @@ const ForgotPassword = () => {
             className="h-[200px] block ml-auto mr-auto"
           />
         </div>
-        <div>
+        <div className="px-8">
           <h2 className="text-center text-[28px] my-4">Forgot Password</h2>
           <p className="text-[#333] text-center mb-2">
             No problem! Enter your email below and We'll send you an email with
             instruction to reset your password.
           </p>
         </div>
-        <div className="flex flex-col justify-between items-center py-1">
+        <div className="flex flex-col justify-between items-center py-1 px-8">
           <input
             className="text-left block w-full p-1 pl-4 border-solid border-[1px] border-[#ced4da] rounded-sm"
             value={email}

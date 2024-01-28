@@ -9,6 +9,7 @@ import Payment from "../page/Payment";
 import ListCategory from "../page/ListCategory";
 import Purchase from "../page/Purchase";
 import Account from "../page/Account";
+import CheckOutlet from "./CheckOutlet";
 
 function RoutePage() {
   return (
@@ -19,11 +20,13 @@ function RoutePage() {
         <Route path="/login" element={<Form />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/detail-item/:itemId" element={<DetailIem />} />
-        <Route path="/order" element={<Order />} />
-        <Route path="/payment" element={<Payment />} />
         <Route path="/list-item-category" element={<ListCategory />} />
-        <Route path="/purchase" element={<Purchase />} />
-        <Route path="/account" element={<Account />} />
+        <Route element={<CheckOutlet></CheckOutlet>}>
+          <Route path="/order" element={<Order />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/purchase" element={<Purchase />} />
+          <Route path="/account" element={<Account />} />
+        </Route>
       </Routes>
     </div>
   );
