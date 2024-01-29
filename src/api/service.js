@@ -17,7 +17,7 @@ export const requests = {
 
   credential: (origin, value) => {
     return axios.get(
-      `/v2/credential?origin=${origin}&token=${value}`
+      `/v2/credential?origin=${origin}&value=${value}`
     );
   },
 

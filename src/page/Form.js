@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useGoogleLogin } from "@react-oauth/google";
 // import FacebookLogin from "react-facebook-login";
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+// import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 
 import { requests } from "../api/service";
 import { login } from "../store/userSlice";
@@ -210,20 +210,13 @@ const Form = () => {
                       }}
                     ></i>
                   </div>
-                  <FacebookLogin
-                    appId={APP_ID}
-                    autoLoad={false}
-                    fields="name,email,picture"
-                    callback={responseFacebook}
-                    render={(renderProps) => (
-                      <div onClick={renderProps.onClick}>
+                  
+                      <div>
                         <i
                           className="fab fa-facebook social-facebook cursor-pointer"
                           style={{ fontSize: "36px", color: "#1741d9" }}
                         ></i>
                       </div>
-                    )}
-                  />
                 </div>
               </div>
               {/* </form> */}
