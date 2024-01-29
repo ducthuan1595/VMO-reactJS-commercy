@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useGoogleLogin } from "@react-oauth/google";
+// import FacebookLogin from "react-facebook-login";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 
 import { requests } from "../api/service";
 import { login } from "../store/userSlice";
@@ -74,10 +76,23 @@ const Form = () => {
   });
 
 
+  const responseFacebook = async(response) => {
+    console.log(response);
+    const res = await requests.credential("google", response);
+    if(res.message === 'ok') {
+      dispatch(login(res));
+      navigate("/");
+    }
+  };
+
+
   return (
     <div>
       <div className="flex justify-center items-center h-screen">
-        <div className="hidden md:block cursor-pointer" onClick={() => navigate('/')}>
+        <div
+          className="hidden md:block cursor-pointer"
+          onClick={() => navigate("/")}
+        >
           <img src="/logo/book_logo.png" alt="logo" className="h-[240px]" />
         </div>
         <div className="h-2/3 flex justify-center items-center">
@@ -192,12 +207,20 @@ const Form = () => {
                       }}
                     ></i>
                   </div>
-                  <div>
-                    <i
-                      className="fab fa-facebook social-facebook"
-                      style={{ fontSize: "36px", color: "#1741d9" }}
-                    ></i>
-                  </div>
+                  <FacebookLogin
+                    appId="450109437373201"
+                    autoLoad={false}
+                    fields="name,email,picture"
+                    callback={responseFacebook}
+                    render={(renderProps) => (
+                      <div onClick={renderProps.onClick}>
+                        <i
+                          className="fab fa-facebook social-facebook cursor-pointer"
+                          style={{ fontSize: "36px", color: "#1741d9" }}
+                        ></i>
+                      </div>
+                    )}
+                  />
                 </div>
               </div>
               {/* </form> */}
