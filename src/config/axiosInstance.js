@@ -2,7 +2,6 @@ import axios from 'axios';
 import store from '../store';
 
 const API_URl = process.env.REACT_APP_API_URL;
-const token = store.getState().auth.token;
 
 const instance = axios.create({
   baseURL: API_URl + "/api",
@@ -22,6 +21,8 @@ const requiringEndPoints  = [
 ]
 
 instance.interceptors.request.use(function (config) {
+  const token = store.getState().auth.token;
+
   if(requiringEndPoints.some(endpoint => config.url.includes(endpoint))) {
     config.headers.Authorization = `Bearer ${token}`
   }
