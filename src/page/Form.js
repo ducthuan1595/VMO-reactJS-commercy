@@ -8,6 +8,9 @@ import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props
 import { requests } from "../api/service";
 import { login } from "../store/userSlice";
 
+const APP_ID = process.env.REACT_APP_FACEBOOK_APP_ID;
+;
+
 const Form = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -208,7 +211,7 @@ const Form = () => {
                     ></i>
                   </div>
                   <FacebookLogin
-                    appId="450109437373201"
+                    appId={APP_ID}
                     autoLoad={false}
                     fields="name,email,picture"
                     callback={responseFacebook}
