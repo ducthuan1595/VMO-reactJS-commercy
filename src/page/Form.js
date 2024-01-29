@@ -2,13 +2,12 @@ import { useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useGoogleLogin } from "@react-oauth/google";
-// import FacebookLogin from "react-facebook-login";
-// import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import {LoginSocialFacebook} from 'reactjs-social-login';
+// import {FacebookLoginButton} from "react-social-login-buttons";
 
 import { requests } from "../api/service";
 import { login } from "../store/userSlice";
 
-const APP_ID = process.env.REACT_APP_FACEBOOK_APP_ID;
 ;
 
 const Form = () => {
@@ -79,13 +78,13 @@ const Form = () => {
   });
 
 
-  const responseFacebook = async(response) => {
-    console.log(response);
-    const res = await requests.credential("google", response);
-    if(res.message === 'ok') {
-      dispatch(login(res));
-      navigate("/");
-    }
+  const loginWithFacebook = async () => {
+    console.log('login');
+    // const res = await requests.loginWithFacebook();
+    // if (res.message === "ok") {
+    //   dispatch(login(res));
+    //   navigate("/");
+    // }
   };
 
 
@@ -210,13 +209,25 @@ const Form = () => {
                       }}
                     ></i>
                   </div>
-                  
-                      <div>
-                        <i
-                          className="fab fa-facebook social-facebook cursor-pointer"
-                          style={{ fontSize: "36px", color: "#1741d9" }}
-                        ></i>
-                      </div>
+                  <LoginSocialFacebook
+                    isOnlyGetToken
+                    appId={process.env.REACT_APP_FB_APP_ID || ""}
+                    onLoginStart={loginWithFacebook}
+                    onResolve={({ provider, data }) => {
+                      console.log(provider, data);
+                    }}
+                    onReject={(err) => {
+                      console.log(err);
+                    }}
+                  >
+                    {/* <FacebookLoginButton /> */}
+                    <div className="cursor-pointer" onClick={loginWithFacebook}>
+                      <i
+                        className="fab fa-facebook social-facebook cursor-pointer"
+                        style={{ fontSize: "36px", color: "#1741d9" }}
+                      ></i>
+                    </div>
+                  </LoginSocialFacebook>
                 </div>
               </div>
               {/* </form> */}

@@ -21,6 +21,10 @@ export const requests = {
     );
   },
 
+  loginWithFacebook: () => {
+    return axios.get(`/v2/auth/facebook`);
+  },
+
   forgotPassword: (value) => {
     return axios.post(
       `/forgot-password`,

@@ -14,7 +14,7 @@
 
 # Link deployment
 
-- client: `https://vmo-react-js-commercy.vercel.app`
+- client: `https://tim-gi-the-book.vercel.app/`
 - admin: `https://ecommercy-book-admin.vercel.app`
 
 # MAIN STRUCTURE PAGE
