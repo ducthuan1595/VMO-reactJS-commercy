@@ -129,4 +129,13 @@ export const requests = {
       { ...value },
     );
   },
+
+  // Stripe
+  stripeConfig: () => {
+    return axios.get('/v2/config-stripe');
+  },
+
+  createPaymentStripe: (value) => {
+    return axios.post("/v2/create-payment-intent", {...value});
+  }
 };

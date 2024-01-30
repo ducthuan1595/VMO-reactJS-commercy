@@ -5,9 +5,14 @@ import { requests } from "../api/service";
 import MainLayout from "../layout/Main";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+// import { Elements } from "@stripe/react-stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
+import { useStripe, useElements } from "@stripe/react-stripe-js";
+
 import handleToast from "../util/toast";
 import { addCart } from "../store/userSlice";
 import { getCodeVoucher } from "../store/voucherSlice";
+import CheckoutForm from "../components/payment/CheckoutForm";
 
 export default function Payment() {
   const location = useLocation();
@@ -16,10 +21,32 @@ export default function Payment() {
   const cart = useSelector((state) => state.auth.userCurr);
   const codeVoucher = useSelector((state) => state.voucher.codeVoucher);
 
+  const stripe = useStripe();
+  const elements = useElements();
+
   const [cartItem, setCartItem] = useState(null);
   const [totalPay, setTotalPay] = useState(0);
   const [totalItem, setTotalItem] = useState(0);
   const [discountVoucher, setDiscountVoucher] = useState(0);
+  const [methodPay, setMethodPay] = useState('P1');
+  // const [stripePromise, setStripePromise] = useState(null);
+  // const [clientSecret, setClientSecret] = useState("");
+
+  const [message, setMessage] = useState(null);
+
+  // useEffect(() => {
+  //   requests.stripeConfig().then(async (res) => {
+  //     setStripePromise(loadStripe(res.publishableKey));
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   requests.createPaymentStripe().then(async (res) => {
+  //     if (res.message === "ok") {
+  //       setClientSecret(res.data.clientSecret);
+  //     }
+  //   });
+  // }, []);
 
   useEffect(() => {
     const handleArr = (arr, cart) => {
@@ -53,7 +80,29 @@ export default function Payment() {
       const values = {
         arrCartId: value,
         voucherCode: codeVoucher && codeVoucher[0].code,
+        methodPay
       };
+      if(methodPay === 'P1') {
+        if (!stripe || !elements) {
+          return;
+        }
+
+        const { error } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            // Make sure to change this to your payment completion page
+            return_url: `${window.location.origin}`,
+          },
+        });
+
+        if (error.type === "card_error" || error.type === "validation_error") {
+          setMessage(error.message);
+          return;
+        } else {
+          setMessage("An unexpected error occured.");
+          return;
+        }
+      }
       const res = await requests.payOrder(values);
       if (res.message === "ok") {
         dispatch(addCart(res.data.updateUser));
@@ -70,7 +119,7 @@ export default function Payment() {
     }
   };
 
-  // console.log(codeVoucher);
+  
   return (
     <MainLayout>
       <div className="text-[22px] font-semibold w-full bg-white p-5 rounded.md text-primary-color">
@@ -119,7 +168,50 @@ export default function Payment() {
           </tbody>
         </table>
       </div>
+
       <div className="bg-white flex flex-col justify-end w-full text-black p-4 mt-4 rounded-md gap-2">
+        <div>
+          <h1 className="text-2xl font-semibold">Phương thức thanh toán</h1>
+          <div className="flex gap-2 items-center my-6">
+            <div
+              className="border bg-white border-red-200 rounded p-2 cursor-pointer"
+              style={{
+                borderColor: methodPay === "P1" ? "#fecaca" : "#f3f3f3",
+              }}
+              onClick={() => setMethodPay("P1")}
+            >
+              <h2>Thẻ tín dụng/ghi nợ</h2>
+            </div>
+            <div
+              className="border bg-white border-red-200 rounded p-2 cursor-pointer"
+              style={{
+                borderColor: methodPay === "P2" ? "#fecaca" : "#f3f3f3",
+              }}
+              onClick={() => setMethodPay("P2")}
+            >
+              <h2>Thanh toán khi nhận hàng</h2>
+            </div>
+          </div>
+          <div className="pl-8">
+            {methodPay === "P1" ? (
+              <div className="max-w-[500px] disabled:hover:pointer-events-none">
+                
+                <CheckoutForm message={message} />
+                
+                 
+              </div>
+            ) : (
+              <div className="mb-6">
+                <span>
+                  Thanh toán khi nhận hàng Phí thu hộ: ₫0 VNĐ. Ưu đãi về phí vận
+                  chuyển (nếu có) áp dụng cả với phí thu hộ.
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="border-b-[1px] border-neutral-200 my-4"></div>
+
         <div className="flex justify-end items-start gap-2">
           <div className="flex flex-col items-start gap-2">
             <span className="">Tổng tiền hàng:</span>
