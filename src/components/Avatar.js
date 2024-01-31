@@ -1,7 +1,6 @@
 import Star from "./Star";
 
 const Avatar = ({isStar, review}) => {
-  console.log(review);
   return (
     <div className="flex justify-center items-center gap-2">
       <div className="h-[40px] w-[40px] rounded-full">
