@@ -1,52 +1,55 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 import { requests } from "../api/service";
 import MainLayout from "../layout/Main";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-// import { Elements } from "@stripe/react-stripe-js";
-// import { loadStripe } from "@stripe/stripe-js";
-import { useStripe, useElements } from "@stripe/react-stripe-js";
-
-import handleToast from "../util/toast";
 import { addCart } from "../store/userSlice";
 import { getCodeVoucher } from "../store/voucherSlice";
+import handleToast from "../util/toast";
+
 import CheckoutForm from "../components/payment/CheckoutForm";
 
 export default function Payment() {
   const location = useLocation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const cart = useSelector((state) => state.auth.userCurr);
   const codeVoucher = useSelector((state) => state.voucher.codeVoucher);
-
-  const stripe = useStripe();
-  const elements = useElements();
+   const dispatch = useDispatch();
+   const navigate = useNavigate();
 
   const [cartItem, setCartItem] = useState(null);
   const [totalPay, setTotalPay] = useState(0);
   const [totalItem, setTotalItem] = useState(0);
   const [discountVoucher, setDiscountVoucher] = useState(0);
   const [methodPay, setMethodPay] = useState('P1');
-  // const [stripePromise, setStripePromise] = useState(null);
-  // const [clientSecret, setClientSecret] = useState("");
+  const [stripePromise, setStripePromise] = useState(null);
+  const [clientSecret, setClientSecret] = useState("");
+  const [isSubmit, setIsSubmit] = useState(false);
 
-  const [message, setMessage] = useState(null);
 
-  // useEffect(() => {
-  //   requests.stripeConfig().then(async (res) => {
-  //     setStripePromise(loadStripe(res.publishableKey));
-  //   });
-  // }, []);
+  useEffect(() => {
+    requests.stripeConfig().then(async (res) => {
+      setStripePromise(loadStripe(res.publishableKey));
+    });
+  }, []);
 
-  // useEffect(() => {
-  //   requests.createPaymentStripe().then(async (res) => {
-  //     if (res.message === "ok") {
-  //       setClientSecret(res.data.clientSecret);
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    if (totalPay > 0) {
+      const req = {
+        pay: totalPay,
+      };
+      requests.createPaymentStripe(req).then(async (res) => {
+        if (res.message === "ok") {
+          setClientSecret(res.data.clientSecret);
+        }
+      });
+    }
+  }, [totalPay]);
 
   useEffect(() => {
     const handleArr = (arr, cart) => {
@@ -74,51 +77,36 @@ export default function Payment() {
     }
   }, [cartItem, codeVoucher]);
 
-  const handleCheckout = async () => {
-    if (cart) {
-      const value = cartItem.map((i) => i._id);
-      const values = {
-        arrCartId: value,
-        voucherCode: codeVoucher && codeVoucher[0].code,
-        methodPay
-      };
-      if(methodPay === 'P1') {
-        if (!stripe || !elements) {
-          return;
-        }
-
-        const { error } = await stripe.confirmPayment({
-          elements,
-          confirmParams: {
-            // Make sure to change this to your payment completion page
-            return_url: `${window.location.origin}`,
-          },
-        });
-
-        if (error.type === "card_error" || error.type === "validation_error") {
-          setMessage(error.message);
-          return;
-        } else {
-          setMessage("An unexpected error occured.");
-          return;
-        }
-      }
-      const res = await requests.payOrder(values);
-      if (res.message === "ok") {
-        dispatch(addCart(res.data.updateUser));
-        dispatch(getCodeVoucher(null));
-        navigate("/");
-        window.scrollTo(0, 0);
-        handleToast(
-          toast.success,
-          "Bạn đã đặt hàng thành công! Kiểm tra email để xem chi tiết."
-        );
-      } else {
-        handleToast(toast.error, "Ôi! Có lỗi sảy ra vui lòng thanh toán lại.");
-      }
+  const handlePayment = async() => {
+    if(methodPay === 'P1') {
+      setIsSubmit((state) => !state)
+      return;
     }
-  };
-
+    if (cart) {
+        const value = cartItem.map((i) => i._id);
+        const values = {
+          arrCartId: value,
+          voucherCode: codeVoucher && codeVoucher[0].code,
+          methodPay,
+        };
+        const res = await requests.payOrder(values);
+        if (res.message === "ok") {
+          dispatch(addCart(res.data.updateUser));
+          dispatch(getCodeVoucher(null));
+          navigate("/");
+          window.scrollTo(0, 0);
+          handleToast(
+            toast.success,
+            "Bạn đã đặt hàng thành công! Kiểm tra email để xem chi tiết."
+          );
+        } else {
+          handleToast(
+            toast.error,
+            "Ôi! Có lỗi sảy ra vui lòng thanh toán lại."
+          );
+        }
+      }
+  }
   
   return (
     <MainLayout>
@@ -195,10 +183,22 @@ export default function Payment() {
           <div className="pl-8">
             {methodPay === "P1" ? (
               <div className="max-w-[500px] disabled:hover:pointer-events-none">
-                
-                <CheckoutForm message={message} />
-                
-                 
+                {stripePromise && clientSecret && (
+                  <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <CheckoutForm
+                      cart={cart}
+                      cartItem={cartItem}
+                      codeVoucher={codeVoucher}
+                      methodPay={methodPay}
+                      totalItem={totalItem}
+                      totalPay={totalPay}
+                      discountVoucher={discountVoucher}
+                      isSubmit={isSubmit}
+                      setIsSubmit={setIsSubmit}
+                      clientSecret={clientSecret}
+                    />
+                  </Elements>
+                )}
               </div>
             ) : (
               <div className="mb-6">
@@ -210,6 +210,7 @@ export default function Payment() {
             )}
           </div>
         </div>
+
         <div className="border-b-[1px] border-neutral-200 my-4"></div>
 
         <div className="flex justify-end items-start gap-2">
@@ -247,7 +248,7 @@ export default function Payment() {
         <div className="flex items-center justify-end py-4">
           <button
             className="bg-primary-color py-2 px-24 rounded-md text-white ml-2"
-            onClick={handleCheckout}
+            onClick={handlePayment}
           >
             Đặt hàng
           </button>

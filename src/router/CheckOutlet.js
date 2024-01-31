@@ -6,7 +6,6 @@ const CheckOutlet = ({children}) => {
   const navigate = useNavigate();
   const currUser = useSelector((state) => state.auth.userCurr);
 
-  console.log(currUser);
   useEffect(() => {
     const checkUser = () => {
       if(!currUser) {
