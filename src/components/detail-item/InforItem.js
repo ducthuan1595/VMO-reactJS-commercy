@@ -16,12 +16,13 @@ export default function InforItem({ detailItem }) {
         <div>
           <div>{detailItem?.barcode}</div>
           <div>{detailItem?.author}</div>
-          <div>{detailItem?.language ?? 'Đang cập nhập'}</div>
+          <div>{detailItem?.language ?? "Đang cập nhập"}</div>
           <div>{detailItem?.categoryId.name}</div>
-          <div>{detailItem?.pages ?? 'Đang cập nhập'}</div>
+          <div>{detailItem?.pages ?? "Đang cập nhập"}</div>
         </div>
       </div>
       <div className="mt-2">{detailItem?.slogan}</div>
+
       <div className="border-b-[1px] border-solid border-border-color my-4"></div>
       <div className="relative">
         <div
@@ -29,11 +30,13 @@ export default function InforItem({ detailItem }) {
           style={{
             height: showText ? "" : "160px",
             overflow: showText ? "" : "hidden",
-            // backgroundImage: showText
-            //   ? ""
-            //   : "linear-gradient(#fff, #fff, #333, #fff)",
           }}
         >
+          {detailItem?.detailPic[0]?.url && (
+            <div className="my-5 flex items-center justify-center">
+              <img src={detailItem.detailPic[0].url} alt={detailItem.name} />
+            </div>
+          )}
           {detailItem?.description}
         </div>
         <div
