@@ -29,7 +29,7 @@ export default function Payment() {
   const [methodPay, setMethodPay] = useState('P1');
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState("");
-  const [isSubmit, setIsSubmit] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
 
   useEffect(() => {
@@ -52,13 +52,15 @@ export default function Payment() {
   }, [totalPay]);
 
   useEffect(() => {
-    const handleArr = (arr, cart) => {
-      return arr.find((i) => i.id.toString() === cart._id.toString());
-    };
-    const cartItems = cart.cart.filter((c) =>
-      handleArr(location.state.cart, c)
-    );
-    setCartItem(cartItems);
+    if(location && cart) {
+      const handleArr = (arr, cart) => {
+        return arr.find((i) => i.id.toString() === cart._id.toString());
+      };
+      const cartItems = cart.cart.filter((c) =>
+        handleArr(location.state.cart, c)
+      );
+      setCartItem(cartItems);
+    }
   }, [location, cart]);
 
   useEffect(() => {
@@ -77,18 +79,16 @@ export default function Payment() {
     }
   }, [cartItem, codeVoucher]);
 
-  const handlePayment = async() => {
-    if(methodPay === 'P1') {
-      setIsSubmit((state) => !state)
-      return;
-    }
-    if (cart) {
+  const handleCheckout = async () => {
+    if (methodPay === "P2") {
+      if (cart) {
         const value = cartItem.map((i) => i._id);
         const values = {
           arrCartId: value,
           voucherCode: codeVoucher && codeVoucher[0].code,
           methodPay,
         };
+        setIsProcessing(true);
         const res = await requests.payOrder(values);
         if (res.message === "ok") {
           dispatch(addCart(res.data.updateUser));
@@ -105,8 +105,11 @@ export default function Payment() {
             "Ôi! Có lỗi sảy ra vui lòng thanh toán lại."
           );
         }
+        setIsProcessing(false)
       }
-  }
+    }
+
+  };
   
   return (
     <MainLayout>
@@ -156,7 +159,6 @@ export default function Payment() {
           </tbody>
         </table>
       </div>
-
       <div className="bg-white flex flex-col justify-end w-full text-black p-4 mt-4 rounded-md gap-2">
         <div>
           <h1 className="text-2xl font-semibold">Phương thức thanh toán</h1>
@@ -182,7 +184,7 @@ export default function Payment() {
           </div>
           <div className="pl-8">
             {methodPay === "P1" ? (
-              <div className="max-w-[500px] disabled:hover:pointer-events-none">
+              <div className="">
                 {stripePromise && clientSecret && (
                   <Elements stripe={stripePromise} options={{ clientSecret }}>
                     <CheckoutForm
@@ -193,65 +195,72 @@ export default function Payment() {
                       totalItem={totalItem}
                       totalPay={totalPay}
                       discountVoucher={discountVoucher}
-                      isSubmit={isSubmit}
-                      setIsSubmit={setIsSubmit}
                       clientSecret={clientSecret}
                     />
                   </Elements>
                 )}
               </div>
             ) : (
-              <div className="mb-6">
-                <span>
-                  Thanh toán khi nhận hàng Phí thu hộ: ₫0 VNĐ. Ưu đãi về phí vận
-                  chuyển (nếu có) áp dụng cả với phí thu hộ.
-                </span>
+              <div>
+                <div className="mb-6">
+                  <span>
+                    Thanh toán khi nhận hàng Phí thu hộ: ₫0 VNĐ. Ưu đãi về phí
+                    vận chuyển (nếu có) áp dụng cả với phí thu hộ.
+                  </span>
+                </div>
+
+                <div className="border-b-[1px] border-neutral-200 my-4"></div>
+
+                <div className="flex justify-end items-start gap-2">
+                  <div className="flex flex-col items-start gap-2">
+                    <span className="">Tổng tiền hàng:</span>
+                    <span>Phí giao hàng: </span>
+                    <span>Voucher: </span>
+                    <span className="mt-2 font-medium">Tổng thanh toán:</span>
+                  </div>
+                  <div className="flex flex-col items-end justify-end gap-2">
+                    <span className=" ml-2">
+                      {totalItem &&
+                        Math.floor(totalItem)
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                      đ
+                    </span>
+                    <span>0đ</span>
+                    <span>
+                      -
+                      {discountVoucher
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                      đ
+                    </span>
+                    <div className="flex">
+                      <span className="text-primary-color text-[24px] font-semibold ml-2">
+                        {totalPay &&
+                          Math.floor(totalPay)
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                      </span>
+                      <p className="text-primary-color">đ</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-end py-4">
+                  <button
+                    className="bg-primary-color py-2 px-24 rounded-md text-white ml-2"
+                    onClick={handleCheckout}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? (
+                      <i className="fa-solid fa-circle-notch animate-spin"></i>
+                    ) : (
+                      "Đặt hàng"
+                    )}
+                  </button>
+                </div>
               </div>
             )}
           </div>
-        </div>
-
-        <div className="border-b-[1px] border-neutral-200 my-4"></div>
-
-        <div className="flex justify-end items-start gap-2">
-          <div className="flex flex-col items-start gap-2">
-            <span className="">Tổng tiền hàng:</span>
-            <span>Phí giao hàng: </span>
-            <span>Voucher: </span>
-            <span className="mt-2 font-medium">Tổng thanh toán:</span>
-          </div>
-          <div className="flex flex-col items-end justify-end gap-2">
-            <span className=" ml-2">
-              {totalItem &&
-                Math.floor(totalItem)
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-              đ
-            </span>
-            <span>0đ</span>
-            <span>
-              -
-              {discountVoucher.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-              đ
-            </span>
-            <div className="flex">
-              <span className="text-primary-color text-[24px] font-semibold ml-2">
-                {totalPay &&
-                  Math.floor(totalPay)
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-              </span>
-              <p className="text-primary-color">đ</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center justify-end py-4">
-          <button
-            className="bg-primary-color py-2 px-24 rounded-md text-white ml-2"
-            onClick={handlePayment}
-          >
-            Đặt hàng
-          </button>
         </div>
       </div>
     </MainLayout>

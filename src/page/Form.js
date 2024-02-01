@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useGoogleLogin } from "@react-oauth/google";
 import {LoginSocialFacebook} from 'reactjs-social-login';
@@ -32,7 +32,6 @@ const Form = () => {
           email,
           password,
         });
-        console.log(res);
         if (res.message === "ok") {
           navigate("/login");
           setEmail("");

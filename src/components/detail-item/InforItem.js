@@ -16,9 +16,9 @@ export default function InforItem({ detailItem }) {
         <div>
           <div>{detailItem?.barcode}</div>
           <div>{detailItem?.author}</div>
-          <div>tiếng việt</div>
+          <div>{detailItem?.language ?? 'Đang cập nhập'}</div>
           <div>{detailItem?.categoryId.name}</div>
-          <div>{detailItem?.weight}</div>
+          <div>{detailItem?.pages ?? 'Đang cập nhập'}</div>
         </div>
       </div>
       <div className="mt-2">{detailItem?.slogan}</div>

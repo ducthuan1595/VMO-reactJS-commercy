@@ -15,41 +15,46 @@ const CheckoutForm = ({
   cartItem,
   codeVoucher,
   methodPay,
-  isSubmit,
-  setIsSubmit,
   clientSecret,
+  totalItem,
+  totalPay,
+  discountVoucher,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
 
-  useEffect(() => {
-    const handleCheckout = async () => {
+  const [isProcessing, setIsProcessing] = useState(false);
 
-      if (cart && isSubmit) {
+    const handleCheckout = async (e) => {
+      e.preventDefault();
+      
+      if (cart && methodPay === 'P1') {
         const value = cartItem.map((i) => i._id);
         const values = {
           arrCartId: value,
           voucherCode: codeVoucher && codeVoucher[0].code,
           methodPay,
         };
-        if (methodPay === "P1") {
           if (!stripe || !elements) {
+            setIsProcessing(false);
             return;
           }
-          const data = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-              card: {
-                token: "tok_visa",
-              },
+          setIsProcessing(true)
+          const data = await stripe.confirmPayment({
+            //`Elements` instance that was used to create the Payment Element
+            elements,
+            redirect: "if_required",
+            confirmParams: {
             },
           });
+          console.log(data);
 
           if (data.error) {
+            setIsProcessing(false);
             return;
           }
-        }
         const res = await requests.payOrder(values);
         if (res.message === "ok") {
           dispatch(addCart(res.data.updateUser));
@@ -66,31 +71,63 @@ const CheckoutForm = ({
             "Ôi! Có lỗi sảy ra vui lòng thanh toán lại."
           );
         }
+        setIsProcessing(false)
       }
     };
-    handleCheckout();
-
-    return () => {
-      setIsSubmit(false);
-    };
-  }, [
-    isSubmit,
-    cart,
-    cartItem,
-    codeVoucher,
-    stripe,
-    dispatch,
-    methodPay,
-    navigate,
-    elements,
-    setIsSubmit,
-    clientSecret
-  ]);
 
   return (
     <div>
-      <form id="payment-form">
-        <PaymentElement id="payment-element" />
+      <form onSubmit={handleCheckout}>
+        <div className="max-w-[500px]">
+          <PaymentElement id="payment-element" onReady={() => console.log('click')} />
+        </div>
+        <div className="border-b-[1px] border-neutral-200 my-4"></div>
+
+        <div className="flex justify-end items-start gap-2">
+          <div className="flex flex-col items-start gap-2">
+            <span className="">Tổng tiền hàng:</span>
+            <span>Phí giao hàng: </span>
+            <span>Voucher: </span>
+            <span className="mt-2 font-medium">Tổng thanh toán:</span>
+          </div>
+          <div className="flex flex-col items-end justify-end gap-2">
+            <span className=" ml-2">
+              {totalItem &&
+                Math.floor(totalItem)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              đ
+            </span>
+            <span>0đ</span>
+            <span>
+              -
+              {discountVoucher.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              đ
+            </span>
+            <div className="flex">
+              <span className="text-primary-color text-[24px] font-semibold ml-2">
+                {totalPay &&
+                  Math.floor(totalPay)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              </span>
+              <p className="text-primary-color">đ</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-end py-4">
+          <button
+            className="bg-primary-color py-2 px-24 rounded-md text-white ml-2 disabled:opacity-90"
+            type="submit"
+            disabled={!stripe || isProcessing}
+          >
+            {isProcessing ? (
+              <i className="fa-solid fa-circle-notch animate-spin"></i>
+            ) : (
+              "Đặt hàng"
+            )}
+          </button>
+        </div>
       </form>
     </div>
   );
