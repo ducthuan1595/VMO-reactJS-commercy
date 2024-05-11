@@ -40,7 +40,7 @@
 - client: javascript, reactJs, tailwind
 - admin: typescript, reactJs, tailwind
 - server: nodeJs, javascript, express
-- database: mongoDB, mongoose
+- database: mongoDB, mongoose, redis
 
 # FUTURE FEATURES
 

@@ -7,7 +7,7 @@ export const getReviews = async(page, limit) => {
       return res.data;
     }
   }catch(err) {
-    throw new Error('Wrong something!')
+    console.error(err);
   }
 }
 
@@ -18,7 +18,7 @@ export const getReviewFollowItem = async(itemId, rateStar, page, limit) => {
       return res.data;
     }
   }catch(err) {
-    throw new Error('Wrong something!')
+    console.log(err);
   }
 }
 
@@ -29,6 +29,6 @@ export const getReviewByUser = async() => {
       return res.data;
     }
   }catch(err) {
-    throw new Error('Wrong something!')
+    console.log(err);
   }
 }
